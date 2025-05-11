@@ -1,0 +1,35 @@
+.upload-icon svg{
+    path{
+        fill: var(--color-primary);
+    }
+}
+li:hover{
+    a svg{
+        path{
+            fill: var(--color-white);
+        }
+    }
+}
+.trash-icon svg{
+    width: 23px;
+    height: 23px;
+    path{
+        fill: var(--color-primary);
+    }
+}
+
+.drive-icon svg{
+    width: 23px;
+    height: 23px;
+    path{
+        fill: var(--color-primary);
+    }
+}
+
+.github-icon svg{
+    width: 28px;
+    height: 28px;
+    path{
+        fill: var(--color-primary);
+    }
+}

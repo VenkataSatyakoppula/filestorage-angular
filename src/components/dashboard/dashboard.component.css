@@ -1,0 +1,28 @@
+.drive-icon svg{
+    width: 20px;
+    height: 18px;
+    path{
+        fill: var(--color-black);
+    }
+}
+
+.util-icon svg{
+    width: 25px;
+    height: 25px;
+}
+.util-icon svg:hover {
+    path {
+        fill: var(--color-primary);
+    }
+}
+thead{
+    overflow: auto;
+    border: 1px solid black;
+}
+
+td{
+    border: 1px solid red;
+    resize: horizontal;
+    margin-left: 1rem;
+    
+}

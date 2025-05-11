@@ -1,0 +1,37 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import 'tailwindcss';
+
+
+:root {
+    --main-color: #006089;
+    --padding-size: 16px;
+    --font-stack: 'Poppins', sans-serif;
+}
+@theme {
+    --color-primary: #006089;
+}
+
+
+body {
+    font-family: var(--font-stack);
+}
+
+
+.btn-primary {
+    @apply px-4 py-1 text-lg text-white bg-primary font-semibold rounded-xl outline-1 outline-primary transition cursor-pointer hover:bg-black;
+}
+
+
+.dropdown-icon-size svg{
+    width: 20px;
+    height: 18px;
+    path{
+        fill: var(--color-primary);
+    }
+}
+.dropdown-icon-white{
+    svg path{
+        fill: var(--color-white);
+    }
+}

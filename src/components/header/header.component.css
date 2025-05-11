@@ -1,0 +1,23 @@
+.trash-icon svg{
+    width: 27px;
+    height: 22px;
+    path{
+        fill: var(--color-primary);
+    }
+}
+
+.github-icon svg{
+    width: 28px;
+    height: 28px;
+    path{
+        fill: var(--color-primary);
+    }
+}
+.logout-icon svg{
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;   
+    path{
+        fill: var(--color-red-500);
+    }
+}

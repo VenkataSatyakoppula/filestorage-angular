@@ -1,0 +1,81 @@
+<nav class="max-md:flex-col py-4 bg-white rounded-md"> 
+  <div class="flex justify-between">
+    <div class="text-3xl font-extrabold">
+      <a href="/"> Simple<span class="text-primary">Files</span></a> 
+    </div>
+    <div class="hidden md:flex items-center space-x-4">
+      <a
+        class="border-b-white border-b-2 text-lg font-semibold hover:border-b-primary hover:border-b-2 cursor-pointer"
+      >
+        Sign Up
+    </a>
+      <button
+        class="btn-primary"
+      >
+        Login
+      </button>
+    </div>
+    <button (click)="toggleMenu()" class="md:hidden flex flex-col justify-center items-center w-10 h-10 bg-primary rounded-lg relative">
+      <!-- Line 1 -->
+      <span [ngClass]="{
+        'rotate-45 translate-y-2': menuOpen,
+        'translate-y-0': !menuOpen
+      }"
+      class="w-6 h-0.5 mb-0.5 bg-white transform transition duration-300 ease-in-out"></span>
+  
+      <!-- Line 2 -->
+      <span [ngClass]="{
+        'opacity-0': menuOpen,
+        'opacity-100': !menuOpen
+      }"
+      class="w-6 h-0.5 bg-white my-1 transition-opacity duration-200"></span>
+  
+      <!-- Line 3 -->
+      <span [ngClass]="{
+        '-rotate-45 -translate-y-2': menuOpen,
+        'translate-y-0': !menuOpen
+      }"
+      class="w-6 h-0.5 mt-0.5 bg-white transform transition duration-300 ease-in-out"></span>
+    </button>
+  </div>
+  @if (menuOpen) {
+    <!-- Mobile Menu -->
+    <div class="hidden max-md:block h-auto px-1 mt-2 shadow-sm rounded-lg">
+      <ul class="flex flex-col font-medium space-y-2.5 p-2">
+        <li>
+          <span class="block text-lg font-bold p-1">Hi, <span class="font-extrabold text-primary">Venkata!</span></span>
+          <hr>
+        </li>
+        
+        <li>
+          <a href="#" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page">
+             <span class="me-1">My Drive</span> <svg-icon name="upload"></svg-icon></a>
+        </li>
+        <li>
+          <a href="#" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page"> <span class="me-1">Recycle bin</span> 
+            <svg-icon name="trash" class="trash-icon"></svg-icon>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page">
+            <span class="me-1">Github</span> <svg-icon name="github" class="github-icon"> </svg-icon>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="block text-black rounded-sm  text-lg text-end  font-bold" aria-current="page">Login</a>
+        </li>
+        <li>
+          <a href="#" class="block text-black rounded-sm  text-lg  text-end font-bold" aria-current="page">SignUp</a>
+        </li>
+        <li>
+          <hr>
+          <a href="#" class="flex text-red-500 rounded-md text-lg justify-end font-extrabold p-2" aria-current="page">
+          <span class="me-1">Log Out</span>  <svg-icon name="logout" class="logout-icon"></svg-icon>
+          </a>
+        </li>
+      </ul>
+  </div>
+  }
+
+</nav>
+

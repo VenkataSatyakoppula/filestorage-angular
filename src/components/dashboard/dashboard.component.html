@@ -1,0 +1,96 @@
+<main class="flex h-full w-full">
+   <app-side-bar></app-side-bar>
+   <section class="flex-1 flex">
+      <div class="flex flex-col mt-6 flex-1">
+             <div class="files-path flex justify-between mx-2">
+               <div class="flex">
+                  <span class="flex items-center"><svg-icon src="images/drive.svg" class="drive-icon"></svg-icon> <span class="mx-1">Drive</span> / <span class="mx-1"> root</span></span>
+                  <svg-icon src="images/download.svg" class="util-icon ms-5 cursor-pointer"></svg-icon>
+                  <svg-icon src="images/delete.svg" class="util-icon ms-5 cursor-pointer"></svg-icon>
+                  
+               </div>
+               
+               <span id="dropdownDefaultButton">
+                  <button  (click)="dropdown = !dropdown" data-dropdown-toggle="dropdown" class="text-black  focus:ring-2 outline-1 outline-black font-medium rounded-md text-sm  px-2 py-1 text-center cursor-pointer inline-flex items-center" type="button"> 
+                      <svg-icon src="images/grid.svg" class="dropdown-icon-size"></svg-icon> <p class="font-bold ms-1">Grid</p>  
+                     <svg class="w-2.5 h-2.5 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                     </svg>
+                  </button>
+                     <div id="dropdown" [ngClass]="dropdown? 'block':'hidden'" class="absolute bg-primary rounded-md shadow-sm z-20 mt-1">
+                        <ul class="text-sm text-white" aria-labelledby="dropdownDefaultButton">
+                          <li class="hover:bg-black hover:rounded-t-md p-1">
+                            <a href="#" class="flex px-2 py-2"><svg-icon src="images/grid.svg" class="dropdown-icon-size dropdown-icon-white"></svg-icon> <p class="me-2  ms-1">Grid</p></a>
+                          </li>
+                          <li class="hover:bg-black hover:rounded-b-md p-1">
+                            <a href="#" class="flex px-2 py-2"><svg-icon src="images/list.svg" class="dropdown-icon-size dropdown-icon-white"></svg-icon> <p class="me-2  ms-1">List</p></a>
+                          </li>
+                        </ul>
+                    </div>
+               </span>
+             </div>
+
+            @if(gridView){
+               <div class="grid h-[calc(100vh-190px)] auto-rows-min overflow-y-auto" [ngClass]="zeroFiles ? [`bg-[center_50px]`,`bg-[length:300px_300px]`,'bg-no-repeat', `bg-[url('assets/images/empty-drive.svg')]`,'justify-center'] :  ['lg:grid-cols-10','grid-cols-6', 'max-sm:grid-cols-4', 'mt-4']">
+                  @for (item of files; track $index) {
+                     <div class="hover:bg-gray-100 cursor-pointer">
+                        <img src="images/icons8-aac-50.png" class="m-auto">
+                        <p class="whitespace-normal break-words line-clamp-2 text-sm m-auto w-20 text-center">
+                           jaspesssssssssss.acc
+                        </p>
+                     </div>
+                  }
+                  @if (zeroFiles) {
+                     <span class="block text-center text-5xl font-bold mt-[320px]">Empty Drive ;(</span>
+                  }
+               </div> 
+            }
+
+            @else {
+               @if (!zeroFiles) {
+                  <table class="w-full mt-3 resize-x">
+                     <thead>
+                       <tr>
+                        <th class="p-1 text-start w-120">File Name</th>
+                        <th class="p-1 text-start w-50">Date Created</th>
+                        <th class="p-1 text-start w-25">File Type</th>
+                        <th class="p-1 text-start">Size</th>
+                       </tr>
+                     </thead>
+                  </table>
+               }
+
+               <div class="w-full h-[calc(100vh-230px)]  overflow-y-auto" [ngClass]="zeroFiles ? [`bg-[center_50px]`,`bg-[length:300px_300px]`,'bg-no-repeat', `bg-[url('assets/images/empty-drive.svg')]`,'justify-center'] : ''">
+                  <table class="w-full">
+                     <tbody>
+                        @for (item of files; track $index) {
+                           <tr class="hover:bg-gray-100 cursor-pointer" (click)="checkBox($index.toString())">
+                              <td class="w-120">
+                                <div class="flex justify-start">
+                                   <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 accent-primary bg-gray-100 border-gray-300 rounded-sm">
+                                   <img src="images/icons8-aac-50.png" height="30" width="30">
+                                   <p class="text-sm truncate w-full ms-2">
+                                      jaspessssssssssssssssssssssssssssssssssss.acc
+                                   </p>
+                                </div>
+                              </td>
+                              <td class="text-start w-50">04/06/2025 9:56PM</td>
+                              <td class="w-25">ACC File</td>
+                              <td>14.3 KB</td>
+                           </tr>
+                        }
+                     </tbody>
+                   </table>
+  
+                  @if (zeroFiles) {
+                     <span class="block text-center text-5xl font-bold mt-[320px]">Empty Drive ;(</span>
+                  }
+               </div> 
+            }
+
+      </div>
+   </section>
+</main>
+<app-speed-dail></app-speed-dail>
+
+
