@@ -1,10 +1,10 @@
-import { Component, ElementRef, HostListener, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, HostListener, signal, ViewEncapsulation } from '@angular/core';
 import { FileItem } from '../../models/file.model';
 import { CommonModule } from '@angular/common';
 import { SpeedDailComponent } from '../speed-dail/speed-dail.component';
 import { SideBarComponent } from '../side-bar/side-bar.component';
 import { SvgIconComponent } from 'angular-svg-icon';
-import { BlobOptions } from 'node:buffer';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,8 +16,9 @@ import { BlobOptions } from 'node:buffer';
 export class DashboardComponent {
   dropdown: boolean = false;
   gridView: boolean = false;
-   
+  selectedCount = signal(0);
   files: string[] | null = new Array(20).fill(false);
+  checkBoxChecked: boolean[] =new Array(20).fill(false); 
   zeroFiles: boolean = this.files !== null && this.files.length <= 0;
 
   getFileIcon(ext: string): string {
@@ -38,9 +39,23 @@ export class DashboardComponent {
     }
   }
   constructor(private eRef: ElementRef
-  ){}
+  ){  }
+  ngOninit(){
+    initFlowbite();
+
+  }
   checkBox(index:string){
-    console.log( Number.parseInt(index));
+    if(this.checkBoxChecked[Number.parseInt(index)]){
+      this.selectedCount.update((val)=> {
+        if(val > 0){
+          return val - 1;
+        }
+        return 0;
+      });
+    }else{
+      this.selectedCount.update((val)=> val+1);
+    }
+    this.checkBoxChecked[Number.parseInt(index)] = !this.checkBoxChecked[Number.parseInt(index)];
   }
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent) {

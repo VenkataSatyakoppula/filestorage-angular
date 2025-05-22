@@ -5,8 +5,24 @@
              <div class="files-path flex justify-between mx-2">
                <div class="flex">
                   <span class="flex items-center"><svg-icon src="images/drive.svg" class="drive-icon"></svg-icon> <span class="mx-1">Drive</span> / <span class="mx-1"> root</span></span>
-                  <svg-icon src="images/download.svg" class="util-icon ms-5 cursor-pointer"></svg-icon>
-                  <svg-icon src="images/delete.svg" class="util-icon ms-5 cursor-pointer"></svg-icon>
+                  @if(selectedCount()>0){
+                     <div class="flex bg-gray-200 rounded-lg items-center w-fit px-1 ms-2">
+                        <svg-icon src="images/close.svg" class="drive-icon"></svg-icon>
+                        <p class="ms-2">{{selectedCount()}} <span class="max-md:hidden"> Selected </span> </p>
+                        <svg-icon src="images/download.svg" data-tooltip-target="tooltip-default" data-tooltip-trigger="hover" class="util-icon ms-3 cursor-pointer"></svg-icon>
+                        <div id="tooltip-default" role="tooltip" class="absolute z-10 invisible inline-block px-2 py-1 text-sm font-medium text-white transition-opacity duration-300 bg-primary rounded-lg shadow-xs opacity-0 tooltip">
+                           Download file
+                           <div class="tooltip-arrow" data-popper-arrow></div>
+                       </div>
+                        <svg-icon src="images/delete.svg" data-tooltip-target="tooltip-delete" class="util-icon ms-3 cursor-pointer"></svg-icon>
+                        <div id="tooltip-delete" role="tooltip" class="absolute z-10 invisible inline-block px-2 py-1 text-sm font-medium text-white transition-opacity duration-300 bg-primary rounded-lg shadow-xs opacity-0 tooltip">
+                           Delete file
+                           <div class="tooltip-arrow" data-popper-arrow></div>
+                       </div>
+                     </div>
+                  }
+
+
                   
                </div>
                
@@ -51,10 +67,10 @@
                   <table class="w-full mt-3 resize-x">
                      <thead>
                        <tr>
-                        <th class="p-1 text-start w-120">File Name</th>
-                        <th class="p-1 text-start w-50">Date Created</th>
-                        <th class="p-1 text-start w-25">File Type</th>
-                        <th class="p-1 text-start">Size</th>
+                        <th class="p-1 text-start w-120 max-md:w-full">File Name</th>
+                        <th class="p-1 text-start w-50 max-md:hidden">Date Created</th>
+                        <th class="p-1 text-start w-25 max-md:hidden">File Type</th>
+                        <th class="p-1 text-start max-md:hidden">Size</th>
                        </tr>
                      </thead>
                   </table>
@@ -64,19 +80,19 @@
                   <table class="w-full">
                      <tbody>
                         @for (item of files; track $index) {
-                           <tr class="hover:bg-gray-100 cursor-pointer" (click)="checkBox($index.toString())">
+                           <tr class="hover:bg-gray-100 cursor-pointer" [ngClass]="checkBoxChecked[$index]?'bg-gray-200':''" (click)="checkBox($index.toString())">
                               <td class="w-120">
-                                <div class="flex justify-start">
-                                   <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 accent-primary bg-gray-100 border-gray-300 rounded-sm">
+                                <div class="flex justify-start items-center">
+                                   <input id="default-checkbox" type="checkbox" [checked]="checkBoxChecked[$index]"  class="w-4 h-4 accent-primary bg-gray-100 border-gray-300 rounded-sm">
                                    <img src="images/icons8-aac-50.png" height="30" width="30">
                                    <p class="text-sm truncate w-full ms-2">
                                       jaspessssssssssssssssssssssssssssssssssss.acc
                                    </p>
                                 </div>
                               </td>
-                              <td class="text-start w-50">04/06/2025 9:56PM</td>
-                              <td class="w-25">ACC File</td>
-                              <td>14.3 KB</td>
+                              <td class="text-start w-50 max-lg:hidden">04/06/2025 9:56PM</td>
+                              <td class="w-25 max-md:hidden">ACC File</td>
+                              <td class="max-md:hidden">14.3 KB</td>
                            </tr>
                         }
                      </tbody>

@@ -15,14 +15,37 @@
         fill: var(--color-primary);
     }
 }
-thead{
+/* thead{
     overflow: auto;
     border: 1px solid black;
-}
+} */
 
-td{
+/* td{
     border: 1px solid red;
     resize: horizontal;
     margin-left: 1rem;
     
-}
+} */
+
+/* Style the scrollbar track */
+::-webkit-scrollbar {
+    width: 8px; /* Vertical scrollbar width */
+    height: 12px; /* Horizontal scrollbar height */
+  }
+  
+  /* Style the scrollbar thumb (the draggable part) */
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 6px;
+  }
+  
+  /* Hover effect on scrollbar thumb */
+  ::-webkit-scrollbar-thumb:hover {
+    background: black;
+  }
+  
+  /* Optional: style the track background */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
