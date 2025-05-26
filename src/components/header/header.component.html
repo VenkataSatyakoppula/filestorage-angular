@@ -4,16 +4,29 @@
       <a href="/"> Simple<span class="text-primary">Files</span></a> 
     </div>
     <div class="hidden md:flex items-center space-x-4">
-      <a
+      @if(isLoggedIn()){
+        <span class="block text-lg font-bold p-1">Hi, <span class="font-extrabold text-primary">Venkata!</span></span>
+        <a  [routerLink]="['/authenticate']"
+              [queryParams]="{ type: 'login' }" (click)="logOut()" class="flex text-red-500 rounded-md text-md justify-center items-center font-extrabold p-1 hover:bg-red-500 hover:text-white custom-hover" aria-current="page">
+          <span class="me-2">Log Out</span>  <svg-icon name="logout" class="logout-icon"></svg-icon>
+          </a>
+      }@else {
+        <a
         class="border-b-white border-b-2 text-lg font-semibold hover:border-b-primary hover:border-b-2 cursor-pointer"
+        [routerLink]="['/authenticate']"
+        [queryParams]="{ type: 'signUp' }"
       >
         Sign Up
-    </a>
+       </a>
       <button
         class="btn-primary"
+        [routerLink]="['/authenticate']"
+        [queryParams]="{ type: 'login' }"
       >
         Login
       </button>
+      }
+
     </div>
     <button (click)="toggleMenu()" class="md:hidden flex flex-col justify-center items-center w-10 h-10 bg-primary rounded-lg relative">
       <!-- Line 1 -->
@@ -42,37 +55,41 @@
     <!-- Mobile Menu -->
     <div class="hidden max-md:block h-auto px-1 mt-2 shadow-sm rounded-lg">
       <ul class="flex flex-col font-medium space-y-2.5 p-2">
-        <li>
-          <span class="block text-lg font-bold p-1">Hi, <span class="font-extrabold text-primary">Venkata!</span></span>
-          <hr>
-        </li>
-        
-        <li>
-          <a href="#" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page">
-             <span class="me-1">My Drive</span> <svg-icon name="upload"></svg-icon></a>
-        </li>
-        <li>
-          <a href="#" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page"> <span class="me-1">Recycle bin</span> 
-            <svg-icon name="trash" class="trash-icon"></svg-icon>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page">
-            <span class="me-1">Github</span> <svg-icon name="github" class="github-icon"> </svg-icon>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="block text-black rounded-sm  text-lg text-end  font-bold" aria-current="page">Login</a>
-        </li>
-        <li>
-          <a href="#" class="block text-black rounded-sm  text-lg  text-end font-bold" aria-current="page">SignUp</a>
-        </li>
-        <li>
-          <hr>
-          <a href="#" class="flex text-red-500 rounded-md text-lg justify-end font-extrabold p-2" aria-current="page">
-          <span class="me-1">Log Out</span>  <svg-icon name="logout" class="logout-icon"></svg-icon>
-          </a>
-        </li>
+        @if(isLoggedIn()){
+          <li>
+            <span class="block text-lg font-bold p-1">Hi, <span class="font-extrabold text-primary">Venkata!</span></span>
+            <hr>
+          </li>
+          
+          <li>
+            <a href="#" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page">
+               <span class="me-1">My Drive</span> <svg-icon name="upload"></svg-icon></a>
+          </li>
+          <li>
+            <a href="#" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page"> <span class="me-1">Recycle bin</span> 
+              <svg-icon name="trash" class="trash-icon"></svg-icon>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page">
+              <span class="me-1">Github</span> <svg-icon name="github" class="github-icon"> </svg-icon>
+            </a>
+          </li>
+          <li>
+            <hr>
+            <a [routerLink]="['/authenticate']"
+            [queryParams]="{ type: 'login' }" (click)="logOut()" class="flex text-red-500 rounded-md text-lg justify-end font-extrabold p-2" aria-current="page">
+            <span class="me-1">Log Out</span>  <svg-icon name="logout" class="logout-icon"></svg-icon>
+            </a>
+          </li>
+        }@else {
+          <li>
+            <a [routerLink]="['/authenticate']" [queryParams]="{ type: 'signUp' }" class="block text-black rounded-sm  text-lg text-end  font-bold" aria-current="page">Login</a>
+          </li>
+          <li>
+            <a [routerLink]="['/authenticate']" [queryParams]="{ type: 'login' }"  class="block text-black rounded-sm  text-lg  text-end font-bold" aria-current="page">SignUp</a>
+          </li>
+        }
       </ul>
   </div>
   }

@@ -21,3 +21,9 @@
         fill: var(--color-red-500);
     }
 }
+
+.custom-hover:hover{
+    .logout-icon svg path{
+        fill: var(--color-white);
+    }
+}

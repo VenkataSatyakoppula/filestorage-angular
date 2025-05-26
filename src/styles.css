@@ -34,3 +34,7 @@ body {
         fill: var(--color-white);
     }
 }
+
+input::placeholder {
+    opacity: 0.5; /* 0 to 1 — lower is fainter */
+}
