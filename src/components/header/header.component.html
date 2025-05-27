@@ -1,7 +1,7 @@
 <nav class="max-md:flex-col py-4 bg-white rounded-md"> 
   <div class="flex justify-between">
     <div class="text-3xl font-extrabold">
-      <a href="/"> Simple<span class="text-primary">Files</span></a> 
+      <a [routerLink]="['/dashboard']"> Simple<span class="text-primary">Files</span></a> 
     </div>
     <div class="hidden md:flex items-center space-x-4">
       @if(isLoggedIn()){

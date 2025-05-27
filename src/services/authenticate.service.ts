@@ -1,14 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, OnInit, PLATFORM_ID } from '@angular/core';
 import { LoginResponse } from '../models/login.response.model';
 import { LoginPayload } from '../models/login.payload';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environment/environment';
+import { isPlatformBrowser } from '@angular/common';
+import { SignUpPayload } from '../models/signup.payload';
+import { SignUpResponse } from '../models/signup.response';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthenticateService {
-  constructor( private _http:HttpClient) {}
+export class AuthenticateService implements OnInit{
+  
+  constructor( private _http:HttpClient,@Inject(PLATFORM_ID) private platformId: any) {}
 
+  ngOnInit(): void {
+
+  }
   private _authToken: LoginResponse = {
     userId: 0,
     accessToken: '',
@@ -30,11 +37,18 @@ export class AuthenticateService {
   }
 
   logout(){
+    
     sessionStorage.removeItem('authToken');
   }
 
   login(payload:LoginPayload){
     return this._http.post<LoginResponse>(`${environment.apiBaseUrl}/user/login`,payload);
+  }
+
+  signUp(payload:SignUpPayload){
+    return this._http.post<string|any>(`${environment.apiBaseUrl}/user/create`,payload,{
+      responseType: 'text' as 'json',
+    });
   }
 
   healthCheck(){

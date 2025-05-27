@@ -6,7 +6,7 @@ import {
   HttpRequest
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthenticateService } from '../services/auhenticate.service';
+import { AuthenticateService } from '../services/authenticate.service';
 import { LoginResponse } from '../models/login.response.model';
 
 @Injectable()

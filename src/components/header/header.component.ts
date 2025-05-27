@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { RouterLink } from '@angular/router';
-import { AuthenticateService } from '../../services/auhenticate.service';
+import { AuthenticateService } from '../../services/authenticate.service';
 @Component({
   selector: 'app-header',
   imports: [CommonModule, SvgIconComponent, RouterLink],
