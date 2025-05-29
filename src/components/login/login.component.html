@@ -1,5 +1,6 @@
 <section class="flex flex-col justify-center items-center h-full min-[391px]:bg-[url('assets/images/humaaans.svg')] bg-no-repeat bg-left-bottom md:bg-[length:250px_250px] min-[375px]:bg-[length:150px_150px]">
     <span class="mb-5 text-4xl font-extrabold">{{ loginMode?'User Login':'Sign Up'}}</span>
+
 @if (loginMode) {
     <form class="w-auto outline-1 outline-primary p-5 rounded-lg mb-24" [formGroup]="loginForm">
         <div class="mb-2">

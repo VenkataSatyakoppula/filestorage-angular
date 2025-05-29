@@ -20,6 +20,9 @@ export class HeaderComponent {
     return this._auth.isLoggedIn();
   }
   logOut(){
+    if (this.menuOpen){
+      this.menuOpen = false;
+    }
     this._auth.logout();
   }
 

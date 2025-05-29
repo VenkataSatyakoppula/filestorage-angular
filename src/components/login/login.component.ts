@@ -7,6 +7,7 @@ import { LoginPayload } from '../../models/login.payload';
 import { passwordMatchValidator } from '../../validators/password-match.validator';
 import { SignUpPayload } from '../../models/signup.payload';
 import { SignUpResponse } from '../../models/signup.response';
+import { ToastService } from '../../services/toast.service';
 @Component({
   selector: 'app-login',
   imports: [RouterLink,ReactiveFormsModule,CommonModule],
@@ -18,7 +19,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   signUpForm: FormGroup;
   loading: boolean = false;
-  constructor(private route: ActivatedRoute,private _auth: AuthenticateService,private fb: FormBuilder,private _router: Router){
+  constructor(private route: ActivatedRoute,private _auth: AuthenticateService,private fb: FormBuilder,private _router: Router,private _toastService: ToastService){
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -55,10 +56,12 @@ export class LoginComponent implements OnInit {
       next: (res)=>{
         this._auth.setAuthToken(res);
         this.loading = false;
-        this._router.navigate(['dashboard'])
+        this._router.navigate(['dashboard']);
+        this._toastService.show('Login Successful','success',3000);
       },
       error: (err) =>{
         this.loading = false;
+        this._toastService.show('Invalid Login Credentials','error');
         console.log(err);
       }
     });
@@ -85,12 +88,12 @@ export class LoginComponent implements OnInit {
         }
         const result: SignUpResponse = JSON.parse(res);
         this._auth.setAuthToken(result.credentials);
-        console.log(this._auth.getAuthToken())
+        this._toastService.show('SignUp Successful','success',3000);
         this._router.navigate(['dashboard']);
       },
       error: (err) =>{
         this.loading = false;
-
+        this._toastService.show('Something went wrong','error');
         console.log(err);
       }
     });
