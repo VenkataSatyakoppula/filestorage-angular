@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, signal, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, signal, ViewEncapsulation } from '@angular/core';
 import { FileItem } from '../../models/file.model';
 import { CommonModule } from '@angular/common';
 import { SpeedDailComponent } from '../speed-dail/speed-dail.component';
@@ -13,7 +13,7 @@ import { initFlowbite } from 'flowbite';
   styleUrl: './dashboard.component.css',
   encapsulation: ViewEncapsulation.None,
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   dropdown: boolean = false;
   gridView: boolean = false;
   selectedCount = signal(0);
@@ -38,11 +38,9 @@ export class DashboardComponent {
         return '📁';
     }
   }
-  constructor(private eRef: ElementRef
-  ){  }
-  ngOninit(){
+  constructor(){  }
+  ngOnInit(){
     initFlowbite();
-
   }
   checkBox(index:string){
     if(this.checkBoxChecked[Number.parseInt(index)]){

@@ -8,6 +8,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
 import { SignUpPayload } from '../../models/signup.payload';
 import { SignUpResponse } from '../../models/signup.response';
 import { ToastService } from '../../services/toast.service';
+import { SharedService } from '../../services/shared.service';
 @Component({
   selector: 'app-login',
   imports: [RouterLink,ReactiveFormsModule,CommonModule],
@@ -19,7 +20,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   signUpForm: FormGroup;
   loading: boolean = false;
-  constructor(private route: ActivatedRoute,private _auth: AuthenticateService,private fb: FormBuilder,private _router: Router,private _toastService: ToastService){
+  constructor(private route: ActivatedRoute,private _auth: AuthenticateService,private _sharedService: SharedService,private fb: FormBuilder,private _router: Router,private _toastService: ToastService){
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -56,6 +57,7 @@ export class LoginComponent implements OnInit {
       next: (res)=>{
         this._auth.setAuthToken(res);
         this.loading = false;
+        this._sharedService.getUserData();
         this._router.navigate(['dashboard']);
         this._toastService.show('Login Successful','success',3000);
       },
@@ -97,9 +99,6 @@ export class LoginComponent implements OnInit {
         console.log(err);
       }
     });
-
-
-
   }
 
 }

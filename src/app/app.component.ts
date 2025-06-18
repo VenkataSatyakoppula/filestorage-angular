@@ -4,6 +4,8 @@ import { HeaderComponent } from '../components/header/header.component';
 import { FooterComponent } from '../components/footer/footer.component';
 import {SvgIconRegistryService} from 'angular-svg-icon';
 import { ToastComponent } from '../components/toast/toast.component';
+import { SharedService } from '../services/shared.service';
+import { AuthenticateService } from '../services/authenticate.service';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet,HeaderComponent,FooterComponent,ToastComponent],
@@ -11,7 +13,7 @@ import { ToastComponent } from '../components/toast/toast.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  constructor(private _registry: SvgIconRegistryService){
+  constructor(private _registry: SvgIconRegistryService,private _sharedService: SharedService,private _authService: AuthenticateService){
 
   }
   ngOnInit(){
@@ -56,6 +58,11 @@ export class AppComponent {
                                   <path d="M11 7C11 6.44772 11.4477 6 12 6H22C22.5523 6 23 6.44772 23 7C23 7.55228 22.5523 8 22 8H12C11.4477 8 11 7.55228 11 7Z" fill="#0F0F0F"/>
                                   <path d="M11 17C11 16.4477 11.4477 16 12 16H22C22.5523 16 23 16.4477 23 17C23 17.5523 22.5523 18 22 18H12C11.4477 18 11 17.5523 11 17Z" fill="#0F0F0F"/>
                                   </svg>`);
+   if(this._authService.isLoggedIn()){
+    this._sharedService.getUserData();
+   }
+                                  
+   
   }
   title = 'filestorage-angular';
 }

@@ -1,3 +1,4 @@
+@let username = userdata$ | async;
 <nav class="max-md:flex-col py-4 bg-white rounded-md"> 
   <div class="flex justify-between">
     <div class="text-3xl font-extrabold">
@@ -5,9 +6,9 @@
     </div>
     <div class="hidden md:flex items-center space-x-4">
       @if(isLoggedIn()){
-        <span class="block text-lg font-bold p-1">Hi, <span class="font-extrabold text-primary">Venkata!</span></span>
+        <span class="block text-lg font-bold p-1">Hi, <span class="font-extrabold text-primary">{{username?.name}}!</span></span>
         <a  [routerLink]="['/authenticate']"
-              [queryParams]="{ type: 'login' }" (click)="logOut()" class="flex text-red-500 rounded-xl text-md justify-center items-center font-extrabold p-2 hover:bg-red-500 hover:text-white custom-hover" aria-current="page">
+              [queryParams]="{ type: 'login' }" class="flex text-red-500 rounded-xl text-md justify-center items-center font-extrabold p-2 hover:bg-red-500 hover:text-white custom-hover" aria-current="page">
           <span class="me-2">Log Out</span>  <svg-icon name="logout" class="logout-icon"></svg-icon>
           </a>
       }@else {
@@ -78,16 +79,16 @@
           <li>
             <hr>
             <a [routerLink]="['/authenticate']"
-            [queryParams]="{ type: 'login' }" (click)="logOut()" class="flex text-red-500 rounded-md text-lg justify-end font-extrabold p-2" aria-current="page">
+            [queryParams]="{ type: 'login' }" class="flex text-red-500 rounded-md text-lg justify-end font-extrabold p-2" aria-current="page">
             <span class="me-1">Log Out</span>  <svg-icon name="logout" class="logout-icon"></svg-icon>
             </a>
           </li>
         }@else {
           <li>
-            <a [routerLink]="['/authenticate']" [queryParams]="{ type: 'signUp' }" class="block text-black rounded-sm  text-lg text-end  font-bold" aria-current="page">Login</a>
+            <a [routerLink]="['/authenticate']" [queryParams]="{ type: 'login' }" class="block text-black rounded-sm  text-lg text-end  font-bold" aria-current="page">Login</a>
           </li>
           <li>
-            <a [routerLink]="['/authenticate']" [queryParams]="{ type: 'login' }"  class="block text-black rounded-sm  text-lg  text-end font-bold" aria-current="page">SignUp</a>
+            <a [routerLink]="['/authenticate']" [queryParams]="{ type: 'signUp' }"  class="block text-black rounded-sm  text-lg  text-end font-bold" aria-current="page">SignUp</a>
           </li>
         }
       </ul>
