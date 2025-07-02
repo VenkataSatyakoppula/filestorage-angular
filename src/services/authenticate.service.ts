@@ -1,17 +1,15 @@
-import { Inject, Injectable, OnInit, PLATFORM_ID } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { LoginResponse } from '../models/login.response.model';
 import { LoginPayload } from '../models/login.payload';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../environment/environment';
-import { isPlatformBrowser } from '@angular/common';
 import { SignUpPayload } from '../models/signup.payload';
-import { SignUpResponse } from '../models/signup.response';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticateService implements OnInit{
   
-  constructor( private _http:HttpClient,@Inject(PLATFORM_ID) private platformId: any) {}
+  constructor( private _http:HttpClient) {}
 
   ngOnInit(): void {
 
@@ -37,21 +35,14 @@ export class AuthenticateService implements OnInit{
   }
 
   logout(){
-    if('authToken' in sessionStorage){
-      
-      // const headers = new HttpHeaders({
-      //   'Authorization': `Bearer ${this._authToken.accessToken}`,
-      // });
-      this._http.get(`${environment.apiBaseUrl}/user/logout`).subscribe({
-        next:()=>{
-          sessionStorage.removeItem('authToken');
-        },
-        error:(err)=>{
-          console.log(err);
-        }
+    this._http.get(`${environment.apiBaseUrl}/user/logout`).subscribe({
+      next:()=>{
+        sessionStorage.removeItem('authToken');
+      },
+      error:()=>{
+        sessionStorage.removeItem('authToken');
       }
-      )
-    }
+    });
   }
 
   login(payload:LoginPayload){

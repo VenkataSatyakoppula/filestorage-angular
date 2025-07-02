@@ -6,13 +6,19 @@
     }
 }
 
+.drive-icon svg:hover{
+    path{
+        fill: var(--color-white);
+    }
+}
+
 .util-icon svg{
     width: 25px;
     height: 25px;
 }
 .util-icon svg:hover {
     path {
-        fill: var(--color-primary);
+        fill: var(--color-white);
     }
 }
 /* thead{
@@ -29,8 +35,8 @@
 
 /* Style the scrollbar track */
 ::-webkit-scrollbar {
-    width: 8px; /* Vertical scrollbar width */
-    height: 12px; /* Horizontal scrollbar height */
+    width: 5px; /* Vertical scrollbar width */
+    height: 5px; /* Horizontal scrollbar height */
   }
   
   /* Style the scrollbar thumb (the draggable part) */

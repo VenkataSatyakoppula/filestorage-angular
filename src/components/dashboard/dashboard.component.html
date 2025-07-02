@@ -1,5 +1,8 @@
 <main class="flex h-full w-full">
    <app-side-bar></app-side-bar>
+   @if (fileData$  | async; as files) {
+   @let zeroFiles = files.length <= 0;
+   {{updateCheckBoxChecked(files.length)}}
    <section class="flex-1 flex">
       <div class="flex flex-col mt-6 flex-1">
              <div class="files-path flex justify-between mx-2">
@@ -7,14 +10,14 @@
                   <span class="flex items-center"><svg-icon src="images/drive.svg" class="drive-icon"></svg-icon> <span class="mx-1">Drive</span> / <span class="mx-1"> root</span></span>
                   @if(selectedCount()>0){
                      <div class="flex bg-gray-200 rounded-lg items-center w-fit px-1 ms-2">
-                        <svg-icon src="images/close.svg" class="drive-icon"></svg-icon>
+                        <svg-icon src="images/close.svg" class="drive-icon cursor-pointer hover:bg-primary hover:rounded-2xl" (click)="unselectAll()"></svg-icon>
                         <p class="ms-2">{{selectedCount()}} <span class="max-md:hidden"> Selected </span> </p>
-                        <svg-icon src="images/download.svg" data-tooltip-target="tooltip-default" data-tooltip-trigger="hover" class="util-icon ms-3 cursor-pointer"></svg-icon>
+                        <svg-icon src="images/download.svg" data-tooltip-target="tooltip-default" data-tooltip-trigger="hover" class="util-icon ms-3 cursor-pointer hover:bg-primary hover:rounded-2xl"></svg-icon>
                         <div id="tooltip-default" role="tooltip" class="absolute z-10 invisible inline-block px-2 py-1 text-sm font-medium text-white transition-opacity duration-300 bg-primary rounded-lg shadow-xs opacity-0 tooltip">
                            Download file
                            <div class="tooltip-arrow" data-popper-arrow></div>
                        </div>
-                        <svg-icon src="images/delete.svg" data-tooltip-target="tooltip-delete" class="util-icon ms-3 cursor-pointer"></svg-icon>
+                        <svg-icon src="images/delete.svg" data-tooltip-target="tooltip-delete" class="util-icon ms-3 cursor-pointer hover:bg-primary hover:rounded-2xl"></svg-icon>
                         <div id="tooltip-delete" role="tooltip" class="absolute z-10 invisible inline-block px-2 py-1 text-sm font-medium text-white transition-opacity duration-300 bg-primary rounded-lg shadow-xs opacity-0 tooltip">
                            Delete file
                            <div class="tooltip-arrow" data-popper-arrow></div>
@@ -27,19 +30,25 @@
                </div>
                
                <span id="dropdownDefaultButton">
-                  <button  (click)="dropdown = !dropdown" data-dropdown-toggle="dropdown" class="text-black  focus:ring-2 outline-1 outline-black font-medium rounded-md text-sm  px-2 py-1 text-center cursor-pointer inline-flex items-center" type="button"> 
-                      <svg-icon src="images/grid.svg" class="dropdown-icon-size"></svg-icon> <p class="font-bold ms-1">Grid</p>  
+                  <button  (click)="dropdown = !dropdown" data-dropdown-toggle="dropdown" class="text-black cursor-pointer  focus:ring-2 outline-1 outline-black font-medium rounded-md text-sm  px-2 py-1 text-center inline-flex items-center" type="button"> 
+                     @if (gridView) {
+                        <svg-icon src="images/grid.svg" class="dropdown-icon-size"></svg-icon> <p class="font-bold ms-1">Grid</p>
+                     } @else {
+                        <svg-icon src="images/list.svg" class="dropdown-icon-size"></svg-icon> <p class="font-bold ms-1">List</p>
+                     }
+                       
+
                      <svg class="w-2.5 h-2.5 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                      </svg>
                   </button>
                      <div id="dropdown" [ngClass]="dropdown? 'block':'hidden'" class="absolute bg-primary rounded-md shadow-sm z-20 mt-1">
                         <ul class="text-sm text-white" aria-labelledby="dropdownDefaultButton">
-                          <li class="hover:bg-black hover:rounded-t-md p-1">
-                            <a href="#" class="flex px-2 py-2"><svg-icon src="images/grid.svg" class="dropdown-icon-size dropdown-icon-white"></svg-icon> <p class="me-2  ms-1">Grid</p></a>
+                          <li class="hover:bg-black hover:rounded-t-md p-1 cursor-pointer">
+                            <a (click)="gridView = true" class="flex px-2 py-2"><svg-icon src="images/grid.svg" class="dropdown-icon-size dropdown-icon-white"></svg-icon> <p class="me-2  ms-1">Grid</p></a>
                           </li>
-                          <li class="hover:bg-black hover:rounded-b-md p-1">
-                            <a href="#" class="flex px-2 py-2"><svg-icon src="images/list.svg" class="dropdown-icon-size dropdown-icon-white"></svg-icon> <p class="me-2  ms-1">List</p></a>
+                          <li class="hover:bg-black hover:rounded-b-md p-1 cursor-pointer">
+                            <a (click)="gridView = false" class="flex px-2 py-2"><svg-icon src="images/list.svg" class="dropdown-icon-size dropdown-icon-white"></svg-icon> <p class="me-2  ms-1">List</p></a>
                           </li>
                         </ul>
                     </div>
@@ -47,12 +56,13 @@
              </div>
 
             @if(gridView){
-               <div class="grid h-[calc(100vh-190px)] auto-rows-min overflow-y-auto" [ngClass]="zeroFiles ? [`bg-[center_50px]`,`bg-[length:300px_300px]`,'bg-no-repeat', `bg-[url('assets/images/empty-drive.svg')]`,'justify-center'] :  ['lg:grid-cols-10','grid-cols-6', 'max-sm:grid-cols-4', 'mt-4']">
+               <div class="grid h-[calc(100vh-192px)] auto-rows-min" [ngClass]="zeroFiles ? [`bg-[center_50px]`,`bg-[length:300px_300px]`,'bg-no-repeat', `bg-[url('assets/images/empty-drive.svg')]`,'justify-center'] :  ['lg:grid-cols-10','grid-cols-6', 'max-sm:grid-cols-4', 'mt-4']">
                   @for (item of files; track $index) {
-                     <div class="hover:bg-gray-100 cursor-pointer">
-                        <img src="images/icons8-aac-50.png" class="m-auto">
-                        <p class="whitespace-normal break-words line-clamp-2 text-sm m-auto w-20 text-center">
-                           jaspesssssssssss.acc
+                     <div class="hover:bg-gray-100 cursor-pointer m-1 rounded-md" [ngClass]="checkBoxChecked[$index]?'bg-gray-200':''" (click)="checkBox($index.toString())">
+                        <input id="default-checkbox" type="checkbox" [checked]="checkBoxChecked[$index]"  class="w-4 h-4 accent-primary bg-gray-100 border-gray-300 rounded-sm m-1">
+                        <img [src]="'images/'+getFileIcon(item.fileType)" class="m-auto">
+                        <p class="whitespace-normal break-words line-clamp-2 text-xs m-auto w-17 text-center">
+                           {{item.fileName}}
                         </p>
                      </div>
                   }
@@ -79,20 +89,20 @@
                <div class="w-full h-[calc(100vh-230px)]  overflow-y-auto" [ngClass]="zeroFiles ? [`bg-[center_50px]`,`bg-[length:300px_300px]`,'bg-no-repeat', `bg-[url('assets/images/empty-drive.svg')]`,'justify-center'] : ''">
                   <table class="w-full">
                      <tbody>
-                        @for (item of files; track $index) {
-                           <tr class="hover:bg-gray-100 cursor-pointer" [ngClass]="checkBoxChecked[$index]?'bg-gray-200':''" (click)="checkBox($index.toString())">
+                        @for (item of files ; track $index) {
+                           <tr class="hover:bg-gray-100 cursor-pointer rounded-lg" [ngClass]="checkBoxChecked[$index]?'bg-gray-200':''" (click)="checkBox($index.toString())">
                               <td class="w-120">
                                 <div class="flex justify-start items-center">
                                    <input id="default-checkbox" type="checkbox" [checked]="checkBoxChecked[$index]"  class="w-4 h-4 accent-primary bg-gray-100 border-gray-300 rounded-sm">
-                                   <img src="images/icons8-aac-50.png" height="30" width="30">
+                                   <img [src]="'images/'+getFileIcon(item.fileType)" height="30" width="30">
                                    <p class="text-sm truncate w-full ms-2">
-                                      jaspessssssssssssssssssssssssssssssssssss.acc
+                                      {{item.fileName}}
                                    </p>
                                 </div>
                               </td>
-                              <td class="text-start w-50 max-lg:hidden">04/06/2025 9:56PM</td>
-                              <td class="w-25 max-md:hidden">ACC File</td>
-                              <td class="max-md:hidden">14.3 KB</td>
+                              <td class="text-start w-50 max-lg:hidden">{{item.createdAt | date: "MM/dd/yyyy hh:mm a"}}</td>
+                              <td class="w-25 max-md:hidden">{{item.fileType}}</td>
+                              <td class="max-md:hidden">{{item.fileSize}}</td>
                            </tr>
                         }
                      </tbody>
@@ -106,6 +116,8 @@
 
       </div>
    </section>
+   }
+
 </main>
 <app-speed-dail></app-speed-dail>
 

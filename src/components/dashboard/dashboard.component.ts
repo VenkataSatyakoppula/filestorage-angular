@@ -1,11 +1,13 @@
 import { Component, ElementRef, HostListener, OnInit, signal, ViewEncapsulation } from '@angular/core';
-import { FileItem } from '../../models/file.model';
 import { CommonModule } from '@angular/common';
 import { SpeedDailComponent } from '../speed-dail/speed-dail.component';
 import { SideBarComponent } from '../side-bar/side-bar.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { initFlowbite } from 'flowbite';
-
+import { Observable } from 'rxjs';
+import { FileItem } from '../../models/file.model';
+import { SharedService } from '../../services/shared.service';
+import { fileTypes } from '../../content/filemap.content';
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule,SpeedDailComponent,SideBarComponent,SvgIconComponent],
@@ -17,28 +19,21 @@ export class DashboardComponent implements OnInit {
   dropdown: boolean = false;
   gridView: boolean = false;
   selectedCount = signal(0);
-  files: string[] | null = new Array(20).fill(false);
-  checkBoxChecked: boolean[] =new Array(20).fill(false); 
-  zeroFiles: boolean = this.files !== null && this.files.length <= 0;
+  checkBoxChecked: boolean[] = [];
+  public fileData$: Observable<FileItem[] | []>; 
+
+  constructor( private _sharedService: SharedService){
+    this._sharedService.getUserFiles();
+    this.fileData$ = this._sharedService.filesData$;
+  }
 
   getFileIcon(ext: string): string {
-    switch (ext) {
-      case 'pdf':
-        return '📄';
-      case 'jpg':
-      case 'png':
-        return '🖼️';
-      case 'zip':
-        return '🗜️';
-      case 'pptx':
-        return '📊';
-      case 'docx':
-        return '📃';
-      default:
-        return '📁';
+    const iconSize = (this.gridView)? "100.png":"50.png"
+    if(ext in fileTypes){
+      return fileTypes[ext]+iconSize;
     }
+    return fileTypes["default"]+iconSize;
   }
-  constructor(){  }
   ngOnInit(){
     initFlowbite();
   }
@@ -54,6 +49,22 @@ export class DashboardComponent implements OnInit {
       this.selectedCount.update((val)=> val+1);
     }
     this.checkBoxChecked[Number.parseInt(index)] = !this.checkBoxChecked[Number.parseInt(index)];
+  }
+
+  unselectAll(){
+    for (let i = 0; i < this.checkBoxChecked.length; i++) {
+      const element = this.checkBoxChecked[i];
+      if(element){
+        this.checkBoxChecked[i] = false;
+      }
+    }
+    this.selectedCount.set(0);
+  }
+
+  updateCheckBoxChecked(length: number) {
+    if (this.checkBoxChecked.length !== length) {
+      this.checkBoxChecked = new Array(length).fill(false);
+    }
   }
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent) {

@@ -14,7 +14,7 @@ import { User } from '../../models/user.model';
 })
 export class HeaderComponent{
   menuOpen = false;
-  public userdata$!: Observable<User>;
+  public userdata$!: Observable<User| null>;
   constructor(private _auth:AuthenticateService,private _sharedData:SharedService){
     this.userdata$ = this._sharedData.userData$;
   }

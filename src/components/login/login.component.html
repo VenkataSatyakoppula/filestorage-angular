@@ -16,7 +16,7 @@
           <label for="password" class="block mb-2 text-sm font-medium text-black">Your password</label>
           <input type="password"  formControlName="password" id="password" class="border text-black text-sm rounded-lg block w-full p-2.5"  placeholder="........................."/>
           <p class="text-red-500 text-xs mt-1 ms-1">
-            {{ loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched ? 'password is required.' : '‎' }}
+            {{ loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched ? 'Password is required.' : '‎' }}
           </p>
         </div>
         <div class="buttons-container text-center">
