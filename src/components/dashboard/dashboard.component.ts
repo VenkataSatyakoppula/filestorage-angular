@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 import { FileItem } from '../../models/file.model';
 import { SharedService } from '../../services/shared.service';
 import { fileTypes } from '../../content/filemap.content';
+import { UploadProgress } from '../../models/progress.model';
+import { ToastService } from '../../services/toast.service';
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule,SpeedDailComponent,SideBarComponent,SvgIconComponent],
@@ -18,13 +20,22 @@ import { fileTypes } from '../../content/filemap.content';
 export class DashboardComponent implements OnInit {
   dropdown: boolean = false;
   gridView: boolean = false;
+  
   selectedCount = signal(0);
   checkBoxChecked: boolean[] = [];
   public fileData$: Observable<FileItem[] | []>; 
+  showProgressBar$: Observable<UploadProgress | null>;
+  uploadStatus = signal<string>('');
 
-  constructor( private _sharedService: SharedService){
+  constructor( private _sharedService: SharedService, private _toastService: ToastService){
     this._sharedService.getUserFiles();
     this.fileData$ = this._sharedService.filesData$;
+    this.showProgressBar$ = this._sharedService.uploadProgress$;
+    this.uploadStatus = this._sharedService.uploadStatus;
+    console.log(this.uploadStatus());
+    if (this.uploadStatus() === "error") {
+      this._toastService.show("Error Uploading File","error",10000)
+    }
   }
 
   getFileIcon(ext: string): string {

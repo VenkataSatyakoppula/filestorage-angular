@@ -24,6 +24,8 @@
     "angular-svg-icon": "^19.1.1",
     "express": "^4.18.2",
     "flowbite": "^3.1.2",
+    "lottie-web": "^5.12.2",
+    "ngx-lottie": "^13.0.1",
     "postcss": "^8.5.3",
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.1.3",

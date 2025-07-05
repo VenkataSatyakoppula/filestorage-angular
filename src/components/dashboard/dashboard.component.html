@@ -10,7 +10,7 @@
                   <span class="flex items-center"><svg-icon src="images/drive.svg" class="drive-icon"></svg-icon> <span class="mx-1">Drive</span> / <span class="mx-1"> root</span></span>
                   @if(selectedCount()>0){
                      <div class="flex bg-gray-200 rounded-lg items-center w-fit px-1 ms-2">
-                        <svg-icon src="images/close.svg" class="drive-icon cursor-pointer hover:bg-primary hover:rounded-2xl" (click)="unselectAll()"></svg-icon>
+                        <svg-icon src="images/close.svg" class="drive-icon cursor-pointer" (click)="unselectAll()"></svg-icon>
                         <p class="ms-2">{{selectedCount()}} <span class="max-md:hidden"> Selected </span> </p>
                         <svg-icon src="images/download.svg" data-tooltip-target="tooltip-default" data-tooltip-trigger="hover" class="util-icon ms-3 cursor-pointer hover:bg-primary hover:rounded-2xl"></svg-icon>
                         <div id="tooltip-default" role="tooltip" class="absolute z-10 invisible inline-block px-2 py-1 text-sm font-medium text-white transition-opacity duration-300 bg-primary rounded-lg shadow-xs opacity-0 tooltip">
@@ -67,7 +67,7 @@
                      </div>
                   }
                   @if (zeroFiles) {
-                     <span class="block text-center text-5xl font-bold mt-[320px]">Empty Drive ;(</span>
+                     <span class="block text-center text-5xl font-bold mt-[320px]">Empty Drive :(</span>
                   }
                </div> 
             }
@@ -109,13 +109,30 @@
                    </table>
   
                   @if (zeroFiles) {
-                     <span class="block text-center text-5xl font-bold mt-[320px]">Empty Drive ;(</span>
+                     <span class="block text-center text-5xl font-bold mt-[320px]">Empty Drive :(</span>
                   }
                </div> 
             }
 
       </div>
    </section>
+   }
+
+   @if (showProgressBar$ | async; as progress) {
+      <div class="z-10 absolute md:end-10 bottom-10 not-md:start-[50%] not-md:translate-x-[-50%]  w-2xs ps-4 pe-4 pb-2 pt-2 bg-gray-50 rounded-lg">
+            <div class="progress-bar-close my-2">
+               <span class="text-sm font-light text-black flex"> <svg-icon name="upload" class="upload-icon-progress me-2"></svg-icon> <span> Uploading...</span></span>
+               <svg-icon src="images/close.svg" class="drive-icon cursor-pointer"></svg-icon>
+            </div>
+            
+            <div class="flex justify-between mb-1">
+            <span class="text-md font-bold text-black ">{{progress.name}}</span>
+            <span class="text-sm font-bold text-black">{{progress.percent}}%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div class="bg-primary h-2.5 rounded-full" [style]="'width:'+progress.percent+'%'"></div>
+            </div>
+      </div>
    }
 
 </main>

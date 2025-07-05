@@ -10,8 +10,13 @@
     path{
         fill: var(--color-white);
     }
+    background-color: var(--color-primary);
+    border-radius: 1rem;
 }
-
+.progress-bar-close{
+    display: flex;
+    justify-content: space-between;
+}
 .util-icon svg{
     width: 25px;
     height: 25px;

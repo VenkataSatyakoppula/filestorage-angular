@@ -18,7 +18,9 @@ export class CommonService {
   }
 
   uploadFileAPI(formData:FormData){
-    return this._http.post<FileItem>(`${environment.apiBaseUrl}/file/create`,formData);
+    return this._http.post<FileItem>(`${environment.apiBaseUrl}/file/create`,formData,{
+    reportProgress: true,
+    observe: 'events'});
   }
 
 }
