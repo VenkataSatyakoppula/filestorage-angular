@@ -1,6 +1,7 @@
 <main class="flex h-full w-full">
-   <app-side-bar></app-side-bar>
-   @if (fileData$  | async; as files) {
+   <app-side-bar [(menu)]="sideBarOption"></app-side-bar>
+
+   @if (currentData$  | async; as files) {
    @let zeroFiles = files.length <= 0;
    {{updateCheckBoxChecked(files.length)}}
    <section class="flex-1 flex">
@@ -17,7 +18,7 @@
                            Download file
                            <div class="tooltip-arrow" data-popper-arrow></div>
                        </div>
-                        <svg-icon src="images/delete.svg" data-tooltip-target="tooltip-delete" class="util-icon ms-3 cursor-pointer hover:bg-primary hover:rounded-2xl"></svg-icon>
+                        <svg-icon src="images/delete.svg" data-tooltip-target="tooltip-delete" class="util-icon ms-3 cursor-pointer hover:bg-primary hover:rounded-2xl" (click)="deleteFiles()"></svg-icon>
                         <div id="tooltip-delete" role="tooltip" class="absolute z-10 invisible inline-block px-2 py-1 text-sm font-medium text-white transition-opacity duration-300 bg-primary rounded-lg shadow-xs opacity-0 tooltip">
                            Delete file
                            <div class="tooltip-arrow" data-popper-arrow></div>
@@ -58,8 +59,8 @@
             @if(gridView){
                <div class="grid h-[calc(100vh-192px)] auto-rows-min" [ngClass]="zeroFiles ? [`bg-[center_50px]`,`bg-[length:300px_300px]`,'bg-no-repeat', `bg-[url('assets/images/empty-drive.svg')]`,'justify-center'] :  ['lg:grid-cols-10','grid-cols-6', 'max-sm:grid-cols-4', 'mt-4']">
                   @for (item of files; track $index) {
-                     <div class="hover:bg-gray-100 cursor-pointer m-1 rounded-md" [ngClass]="checkBoxChecked[$index]?'bg-gray-200':''" (click)="checkBox($index.toString())">
-                        <input id="default-checkbox" type="checkbox" [checked]="checkBoxChecked[$index]"  class="w-4 h-4 accent-primary bg-gray-100 border-gray-300 rounded-sm m-1">
+                     <div class="hover:bg-gray-100 cursor-pointer m-1 rounded-md" [ngClass]="checkBoxChecked[$index].flag?'bg-gray-200':''" (click)="checkBox($index.toString(),item.fileId)">
+                        <input id="default-checkbox" type="checkbox" [checked]="checkBoxChecked[$index].flag"  class="w-4 h-4 accent-primary bg-gray-100 border-gray-300 rounded-sm m-1">
                         <img [src]="'images/'+getFileIcon(item.fileType)" class="m-auto">
                         <p class="whitespace-normal break-words line-clamp-2 text-xs m-auto w-17 text-center">
                            {{item.fileName}}
@@ -90,10 +91,10 @@
                   <table class="w-full">
                      <tbody>
                         @for (item of files ; track $index) {
-                           <tr class="hover:bg-gray-100 cursor-pointer rounded-lg" [ngClass]="checkBoxChecked[$index]?'bg-gray-200':''" (click)="checkBox($index.toString())">
+                           <tr class="hover:bg-gray-100 cursor-pointer rounded-lg" [ngClass]="checkBoxChecked[$index].flag?'bg-gray-200':''" (click)="checkBox($index.toString(),item.fileId)">
                               <td class="w-120">
                                 <div class="flex justify-start items-center">
-                                   <input id="default-checkbox" type="checkbox" [checked]="checkBoxChecked[$index]"  class="w-4 h-4 accent-primary bg-gray-100 border-gray-300 rounded-sm">
+                                   <input id="default-checkbox" type="checkbox" [checked]="checkBoxChecked[$index].flag"  class="w-4 h-4 accent-primary bg-gray-100 border-gray-300 rounded-sm">
                                    <img [src]="'images/'+getFileIcon(item.fileType)" height="30" width="30">
                                    <p class="text-sm truncate w-full ms-2">
                                       {{item.fileName}}

@@ -17,6 +17,17 @@ export class CommonService {
     return this._http.get<FileItem[]>(`${environment.apiBaseUrl}/file/get`);
   }
 
+  deleteUserFilesAPI(fileId : Number){
+    return this._http.delete<{message:string}>(`${environment.apiBaseUrl}/file/delete/${fileId}`);
+  }
+  wipeUserFilesAPI(fileId : Number){
+    return this._http.delete<{message:string}>(`${environment.apiBaseUrl}/file/wipe/${fileId}`);
+  }
+
+  getRecycleBinFilesAPI(){
+    return this._http.get<FileItem[]>(`${environment.apiBaseUrl}/file/recycle`);
+  }
+
   uploadFileAPI(formData:FormData){
     return this._http.post<FileItem>(`${environment.apiBaseUrl}/file/create`,formData,{
     reportProgress: true,

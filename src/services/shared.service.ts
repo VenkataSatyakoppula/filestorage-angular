@@ -1,10 +1,11 @@
 import { Injectable, OnInit, signal } from '@angular/core';
 import { CommonService } from './common.service';
-import { BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, tap } from 'rxjs';
 import { User } from '../models/user.model';
 import { FileItem } from '../models/file.model';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { UploadProgress } from '../models/progress.model';
+import { ToastService } from './toast.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,12 +14,14 @@ export class SharedService{
     fileSubject: BehaviorSubject<FileItem[] | []> = new BehaviorSubject<FileItem[] |  []>([]);
     SingleFileSubject: BehaviorSubject<FileItem|null> = new BehaviorSubject<FileItem|null>(null);
     uploadProgressSubject: BehaviorSubject<UploadProgress|null> = new BehaviorSubject<UploadProgress|null>(null);
+    recycleBinSubject: BehaviorSubject<FileItem[]|null> = new BehaviorSubject<FileItem[]|null>(null);
     userData$ = this.userSubject.asObservable();
     filesData$ = this.fileSubject.asObservable();
     fileUploaded$ = this.SingleFileSubject.asObservable();
     uploadProgress$ = this.uploadProgressSubject.asObservable();
-    uploadStatus = signal<string>(''); 
-  constructor(private _commonAPI:CommonService) {
+    recycleBin$ = this.recycleBinSubject.asObservable();
+    uploadStatus: string = ''; 
+  constructor(private _commonAPI:CommonService,private _toastService: ToastService) {
   }
 
   getUserData(){
@@ -27,6 +30,9 @@ export class SharedService{
   getUserFiles(){
     return this._commonAPI.getUserFilesAPI().pipe(tap(data=>this.fileSubject.next(data))).subscribe();
   }
+  getRecycleBin(){
+    return this._commonAPI.getRecycleBinFilesAPI().pipe(tap(data=>this.recycleBinSubject.next(data))).subscribe();
+  }
   uploadFile(formData: FormData){
     return this._commonAPI.uploadFileAPI(formData).subscribe(
       {
@@ -34,7 +40,7 @@ export class SharedService{
           switch (event.type) {
             case HttpEventType.Sent:
               console.log('Upload request sent!');
-              this.uploadStatus.set("start");
+              this.uploadStatus ="start";
               break;
             case HttpEventType.UploadProgress:
               if (event.total) {
@@ -50,18 +56,46 @@ export class SharedService{
               this.SingleFileSubject.next(event.body as FileItem);
               this.uploadProgressSubject.next(null);
               this.getUserFiles();
-              this.uploadStatus.set("success");
-              console.log('Upload complete:', event.body);
+              this.uploadStatus = "success";
+              this._toastService.show("Successfully uploaded!","success",10000)
               break;
           }
         },
         error:(err)=>{
           console.log(err);
           this.uploadProgressSubject.next(null);
-          this.uploadStatus.set("error");
+          this.uploadStatus = "error";
+          this._toastService.show("Error Uploading File","error",10000)
         }
       }
     );
   }
 
+  deleteFiles(fileIds: Number[],deleteType:string){
+    const del_refs: Observable<{message:string}>[] = []; 
+
+    for (let i = 0; i < fileIds.length; i++) {
+      const element = fileIds[i];
+      if (deleteType === "myDrive") {
+        del_refs.push(this._commonAPI.deleteUserFilesAPI(element));
+      }
+      else if(deleteType === "recycleBin"){
+        del_refs.push(this._commonAPI.wipeUserFilesAPI(element));
+      }
+    }
+
+    return forkJoin(del_refs).subscribe({
+      next:()=>{
+        this.getUserFiles();
+        this.getRecycleBin();
+      },
+      error:()=>{
+        this._toastService.show("Error Deleting File/Files","error",10000)
+      }
+    });
+  }
+
+  clearUploadStatus(){
+    this.uploadStatus = '';
+  }
 }

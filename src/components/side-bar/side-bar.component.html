@@ -9,19 +9,19 @@
              </a>
           </li>
           <li>
-            <a href="#" class="flex items-center p-2 text-black rounded-lg hover:bg-primary hover:text-white">
+            <a class="flex items-center p-2 text-black rounded-lg hover:bg-primary hover:text-white hover:cursor-pointer" [ngClass]="(menu==='myDrive')?'bg-primary text-white drive-icon-side-bar-selected':''" (click)="selectOption('myDrive')">
                <svg-icon class="drive-icon-side-bar" name="drive"></svg-icon>
                 <span class="ms-3">My Drive</span>
             </a>
          </li >
           <li>
-            <a href="#" class="flex items-center p-2 text-black rounded-lg hover:bg-primary hover:text-white">
+            <a class="flex items-center p-2 text-black rounded-lg hover:bg-primary hover:text-white hover:cursor-pointer" [ngClass]="(menu==='recycleBin')?'bg-primary text-white trash-icon-selected':''" (click)="selectOption('recycleBin')">
                 <svg-icon name="trash" class="trash-icon"></svg-icon>
-               <span class="ms-3">Recyle bin</span>
+               <span class="ms-3">Recycle bin</span>
             </a>
          </li>
          <li>
-            <a href="#" class="flex items-center p-2 text-black rounded-lg hover:bg-primary hover:text-white">
+            <a href="https://github.com/VenkataSatyakoppula/filestorage-angular" target="_blank" class="flex items-center p-2 text-black rounded-lg hover:bg-primary hover:text-white hover:cursor-pointer">
                <svg-icon name="github" class="github-icon"> </svg-icon>
                <span class="ms-2">Github</span>
             </a>

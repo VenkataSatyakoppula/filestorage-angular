@@ -10,6 +10,16 @@ li:hover{
         }
     }
 }
+.trash-icon-selected svg{
+    path{
+            fill: var(--color-white) !important;
+    }
+} 
+.drive-icon-side-bar-selected svg{
+    path{
+        fill: var(--color-white) !important;
+    }
+} 
 .trash-icon svg{
     width: 23px;
     height: 23px;

@@ -9,7 +9,6 @@ import { FileItem } from '../../models/file.model';
 import { SharedService } from '../../services/shared.service';
 import { fileTypes } from '../../content/filemap.content';
 import { UploadProgress } from '../../models/progress.model';
-import { ToastService } from '../../services/toast.service';
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule,SpeedDailComponent,SideBarComponent,SvgIconComponent],
@@ -22,20 +21,27 @@ export class DashboardComponent implements OnInit {
   gridView: boolean = false;
   
   selectedCount = signal(0);
-  checkBoxChecked: boolean[] = [];
+  checkBoxChecked: {id: Number, flag: boolean}[] = [];
   public fileData$: Observable<FileItem[] | []>; 
+  public recycleBin$: Observable<FileItem[] | null>; 
   showProgressBar$: Observable<UploadProgress | null>;
-  uploadStatus = signal<string>('');
-
-  constructor( private _sharedService: SharedService, private _toastService: ToastService){
+  public sideBarOption: string = 'myDrive';
+  constructor( private _sharedService: SharedService){
     this._sharedService.getUserFiles();
+    this._sharedService.getRecycleBin();
+    // const sideBar = sessionStorage.getItem("sideBar");
+    // if (sideBar) {
+    //   this.sideBarOption = sideBar;
+    // }else{
+    //   sessionStorage.setItem("sideBar",this.sideBarOption);
+    // }
     this.fileData$ = this._sharedService.filesData$;
+    this.recycleBin$ = this._sharedService.recycleBin$;
     this.showProgressBar$ = this._sharedService.uploadProgress$;
-    this.uploadStatus = this._sharedService.uploadStatus;
-    console.log(this.uploadStatus());
-    if (this.uploadStatus() === "error") {
-      this._toastService.show("Error Uploading File","error",10000)
-    }
+  }
+
+  get currentData$() {
+    return this.sideBarOption === 'recycleBin' ? this.recycleBin$ : this.fileData$;
   }
 
   getFileIcon(ext: string): string {
@@ -48,8 +54,8 @@ export class DashboardComponent implements OnInit {
   ngOnInit(){
     initFlowbite();
   }
-  checkBox(index:string){
-    if(this.checkBoxChecked[Number.parseInt(index)]){
+  checkBox(index:string,id:Number){
+    if(this.checkBoxChecked[Number.parseInt(index)].flag){
       this.selectedCount.update((val)=> {
         if(val > 0){
           return val - 1;
@@ -59,22 +65,37 @@ export class DashboardComponent implements OnInit {
     }else{
       this.selectedCount.update((val)=> val+1);
     }
-    this.checkBoxChecked[Number.parseInt(index)] = !this.checkBoxChecked[Number.parseInt(index)];
+    this.checkBoxChecked[Number.parseInt(index)].id = id;
+    this.checkBoxChecked[Number.parseInt(index)].flag = !this.checkBoxChecked[Number.parseInt(index)].flag;
+
   }
 
   unselectAll(){
     for (let i = 0; i < this.checkBoxChecked.length; i++) {
       const element = this.checkBoxChecked[i];
       if(element){
-        this.checkBoxChecked[i] = false;
+        this.checkBoxChecked[i].flag = false;
       }
     }
     this.selectedCount.set(0);
   }
 
+  deleteFiles(){
+    const fileIds: Number[] = [] 
+    for (let i = 0; i < this.checkBoxChecked.length; i++) {
+      const element = this.checkBoxChecked[i];
+      if(element.flag){
+        fileIds.push(element.id);
+      }
+    }
+    this._sharedService.deleteFiles(fileIds,this.sideBarOption);
+    this.unselectAll();
+  }
+
   updateCheckBoxChecked(length: number) {
     if (this.checkBoxChecked.length !== length) {
-      this.checkBoxChecked = new Array(length).fill(false);
+      const arr = Array.from({ length }, () => ({ id: 0, flag: false }));
+      this.checkBoxChecked = arr;
     }
   }
   @HostListener('document:click', ['$event'])

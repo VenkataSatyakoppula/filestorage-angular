@@ -35,6 +35,7 @@ export class AuthenticateService implements OnInit{
   }
 
   logout(){
+    sessionStorage.removeItem("sideBar");
     this._http.get(`${environment.apiBaseUrl}/user/logout`).subscribe({
       next:()=>{
         sessionStorage.removeItem('authToken');

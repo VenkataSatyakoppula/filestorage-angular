@@ -1,15 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { SharedService } from '../../services/shared.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-side-bar',
-  imports: [SvgIconComponent],
+  imports: [SvgIconComponent,CommonModule],
   templateUrl: './side-bar.component.html',
   styleUrl: './side-bar.component.css'
 })
 export class SideBarComponent {
   selectedFile : File | null = null;
+  @Input() menu: string = 'myDrive';
+  @Output() menuChange:EventEmitter<string> = new EventEmitter<string>(); 
 
   constructor(private _sharedService: SharedService){}
 
@@ -23,7 +26,6 @@ export class SideBarComponent {
   }
 
   UploadFile(){
-    console.log(this.selectedFile);
     if (!this.selectedFile) {
         console.warn('No file selected.');
         return;
@@ -35,6 +37,11 @@ export class SideBarComponent {
     this._sharedService.uploadFile(formData);
     this._sharedService.getUserFiles();
 
+  }
+
+  selectOption(option:string){
+    this.menu = option;
+    this.menuChange.emit(option);
   }
 
 }
