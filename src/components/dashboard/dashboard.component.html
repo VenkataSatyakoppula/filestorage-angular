@@ -1,5 +1,5 @@
 <main class="flex h-full w-full">
-   <app-side-bar [(menu)]="sideBarOption"></app-side-bar>
+   <app-side-bar [(menu)]="sideBarOption" (menuChange)="changeOption()"></app-side-bar>
 
    @if (currentData$  | async; as files) {
    @let zeroFiles = files.length <= 0;
@@ -74,21 +74,20 @@
             }
 
             @else {
-               @if (!zeroFiles) {
-                  <table class="w-full mt-3 resize-x">
-                     <thead>
-                       <tr>
-                        <th class="p-1 text-start w-120 max-md:w-full">File Name</th>
-                        <th class="p-1 text-start w-50 max-md:hidden">Date Created</th>
-                        <th class="p-1 text-start w-25 max-md:hidden">File Type</th>
-                        <th class="p-1 text-start max-md:hidden">Size</th>
-                       </tr>
-                     </thead>
-                  </table>
-               }
 
                <div class="w-full h-[calc(100vh-230px)]  overflow-y-auto" [ngClass]="zeroFiles ? [`bg-[center_50px]`,`bg-[length:300px_300px]`,'bg-no-repeat', `bg-[url('assets/images/empty-drive.svg')]`,'justify-center'] : ''">
-                  <table class="w-full">
+                  <table class="w-full mt-3">
+                     @if (!zeroFiles) {
+                     <thead>
+                       <tr>
+                        <th class="text-start w-120">File Name</th>
+                        <th class="text-start w-50 max-md:hidden">Date Created</th>
+                        <th class="text-start w-25 max-md:hidden">File Type</th>
+                        <th class="max-md:hidden text-end">Size</th>
+                       </tr>
+                     </thead>
+                     }
+
                      <tbody>
                         @for (item of files ; track $index) {
                            <tr class="hover:bg-gray-100 cursor-pointer rounded-lg" [ngClass]="checkBoxChecked[$index].flag?'bg-gray-200':''" (click)="checkBox($index.toString(),item.fileId)">
@@ -101,9 +100,9 @@
                                    </p>
                                 </div>
                               </td>
-                              <td class="text-start w-50 max-lg:hidden">{{item.createdAt | date: "MM/dd/yyyy hh:mm a"}}</td>
-                              <td class="w-25 max-md:hidden">{{item.fileType}}</td>
-                              <td class="max-md:hidden">{{item.fileSize}}</td>
+                              <td class="text-start w-50 max-md:hidden truncate">{{item.createdAt | date: "MM/dd/yyyy hh:mm a"}}</td>
+                              <td class="w-25 max-md:hidden truncate">{{item.fileType}}</td>
+                              <td class="max-md:hidden pl-2 text-end">{{item.fileSize}}</td>
                            </tr>
                         }
                      </tbody>

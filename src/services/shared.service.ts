@@ -6,6 +6,7 @@ import { FileItem } from '../models/file.model';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { UploadProgress } from '../models/progress.model';
 import { ToastService } from './toast.service';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +22,7 @@ export class SharedService{
     uploadProgress$ = this.uploadProgressSubject.asObservable();
     recycleBin$ = this.recycleBinSubject.asObservable();
     uploadStatus: string = ''; 
-  constructor(private _commonAPI:CommonService,private _toastService: ToastService) {
+  constructor(private _commonAPI:CommonService,private _toastService: ToastService,private _router: Router) {
   }
 
   getUserData(){
@@ -57,7 +58,8 @@ export class SharedService{
               this.uploadProgressSubject.next(null);
               this.getUserFiles();
               this.uploadStatus = "success";
-              this._toastService.show("Successfully uploaded!","success",10000)
+              this._toastService.show("Successfully uploaded!","success",10000);
+              this._router.navigate(["/dashboard"]);
               break;
           }
         },

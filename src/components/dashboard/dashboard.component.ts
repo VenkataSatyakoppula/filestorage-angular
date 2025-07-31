@@ -98,6 +98,12 @@ export class DashboardComponent implements OnInit {
       this.checkBoxChecked = arr;
     }
   }
+  changeOption(){
+    if (this.sideBarOption == "recycleBin" || this.sideBarOption == "myDrive") {
+      this.unselectAll();
+    }
+    
+  }
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent) {
     const targetDiv = document.getElementById('dropdownDefaultButton');
