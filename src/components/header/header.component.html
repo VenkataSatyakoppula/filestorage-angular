@@ -63,16 +63,21 @@
           </li>
           
           <li>
-            <a href="#" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page">
-               <span class="me-1">My Drive</span> <svg-icon name="upload"></svg-icon></a>
+            <input type="file" (change)="onFileSelected($event)" hidden #fileInput />
+            <a class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page" (click)="fileInput.click()">
+               <span class="me-1">Upload File</span> <svg-icon name="upload"></svg-icon></a>
           </li>
           <li>
-            <a href="#" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page"> <span class="me-1">Recycle bin</span> 
+            <a class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page" (click)="selectOption('myDrive')">
+               <span class="me-1">My Drive</span> <svg-icon class="trash-icon" name="drive"></svg-icon></a>
+          </li>
+          <li>
+            <a class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page" (click)="selectOption('recycleBin')"> <span class="me-1">Recycle bin</span> 
               <svg-icon name="trash" class="trash-icon"></svg-icon>
             </a>
           </li>
           <li>
-            <a href="#" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page">
+            <a href="https://github.com/VenkataSatyakoppula/filestorage-angular" target="_blank" class="flex text-black rounded-sm  text-lg justify-end font-bold" aria-current="page">
               <span class="me-1">Github</span> <svg-icon name="github" class="github-icon"> </svg-icon>
             </a>
           </li>

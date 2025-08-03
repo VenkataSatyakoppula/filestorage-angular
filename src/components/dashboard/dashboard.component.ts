@@ -9,6 +9,7 @@ import { FileItem } from '../../models/file.model';
 import { SharedService } from '../../services/shared.service';
 import { fileTypes } from '../../content/filemap.content';
 import { UploadProgress } from '../../models/progress.model';
+import { User } from '../../models/user.model';
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule,SpeedDailComponent,SideBarComponent,SvgIconComponent],
@@ -23,9 +24,11 @@ export class DashboardComponent implements OnInit {
   selectedCount = signal(0);
   checkBoxChecked: {id: Number, flag: boolean}[] = [];
   public fileData$: Observable<FileItem[] | []>; 
-  public recycleBin$: Observable<FileItem[] | null>; 
+  public recycleBin$: Observable<FileItem[] | null>;
+  public userData$: Observable<User | null>; 
   showProgressBar$: Observable<UploadProgress | null>;
   public sideBarOption: string = 'myDrive';
+  public headerOption$: Observable<string|null>;
   constructor( private _sharedService: SharedService){
     this._sharedService.getUserFiles();
     this._sharedService.getRecycleBin();
@@ -38,10 +41,43 @@ export class DashboardComponent implements OnInit {
     this.fileData$ = this._sharedService.filesData$;
     this.recycleBin$ = this._sharedService.recycleBin$;
     this.showProgressBar$ = this._sharedService.uploadProgress$;
+    this.headerOption$ = this._sharedService.selectedOption$;
+    this.userData$ = this._sharedService.userData$;
   }
 
   get currentData$() {
+    this.headerOption$.subscribe({next:(option)=>{
+      if(option){
+        this.sideBarOption = option;
+      }
+    }});
     return this.sideBarOption === 'recycleBin' ? this.recycleBin$ : this.fileData$;
+  }
+
+  getRemPercentage(rem:string,total:string){
+    return ( (1 - (Number(rem) / Number(total)))*100).toFixed(2).toString()+"%"
+  }
+
+  covertToSize(rem:string,total:string){
+    const fileSize = Number(total) - Number(rem);
+    return this.getShortForm(fileSize.toString())
+  }
+
+  getShortForm(size:string){
+    const fileSize = Number(size);
+    const KB = 1024;
+    const MB = KB * 1024;
+    const GB = MB * 1024;
+
+    if (fileSize < KB) {
+      return `${fileSize.toFixed(2)} B`;
+    } else if (fileSize < MB) {
+      return `${(fileSize / KB).toFixed(2)} KB`;
+    } else if (fileSize < GB) {
+      return `${(fileSize / MB).toFixed(2)} MB`;
+    } else {
+      return `${(fileSize / GB).toFixed(2)} GB`;
+    }
   }
 
   getFileIcon(ext: string): string {

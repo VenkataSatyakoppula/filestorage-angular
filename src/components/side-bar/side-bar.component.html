@@ -5,7 +5,7 @@
             <input type="file" (change)="onFileSelected($event)" hidden #fileInput />
              <a class="flex items-center p-2 text-black rounded-lg hover:bg-primary hover:text-white hover:cursor-pointer" (click)="fileInput.click()">
                 <svg-icon name="upload" class="upload-icon mb-0.5"></svg-icon>
-                <span class="ms-3">Add Files</span>
+                <span class="ms-3">Upload File</span>
              </a>
           </li>
           <li>
@@ -28,5 +28,16 @@
          </li>
 
           </ul>
+          <div class="mt-5">
+            @if(userData$ | async; as user){
+               <h3>Used : <span class="text-primary font-bold">{{getRemPercentage(user.remainingSize,user.totalSize)}}</span></h3>
+               <div class="w-full bg-gray-200 rounded-full h-2.5">
+                  <div class="bg-primary h-2.5 rounded-full" [style]="'width:'+getRemPercentage(user.remainingSize,user.totalSize)"></div>
+               </div>
+               <span class="text-xs"> <span class="text-primary font-bold">{{covertToSize(user.remainingSize,user.totalSize)}}  </span>  / {{getShortForm(user.totalSize)}}</span>
+            }
+            
+          </div>
+          <span class="text-[10px]">*Including recycle bin</span>
        </div>
 </aside>

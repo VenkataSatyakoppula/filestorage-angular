@@ -1,11 +1,23 @@
 <main class="flex h-full w-full">
-   <app-side-bar [(menu)]="sideBarOption" (menuChange)="changeOption()"></app-side-bar>
+   <app-side-bar></app-side-bar>
 
    @if (currentData$  | async; as files) {
+
    @let zeroFiles = files.length <= 0;
    {{updateCheckBoxChecked(files.length)}}
    <section class="flex-1 flex">
+
       <div class="flex flex-col mt-6 flex-1">
+         <div class="md:hidden mb-3">
+            @if(userData$ | async; as user){
+               <h3>Used : <span class="text-primary font-bold">{{getRemPercentage(user.remainingSize,user.totalSize)}}</span></h3>
+               <div class="w-full bg-gray-200 rounded-full h-2.5">
+                  <div class="bg-primary h-2.5 rounded-full" [style]="'width:'+getRemPercentage(user.remainingSize,user.totalSize)"></div>
+               </div>
+               <span class="text-xs"> <span class="text-primary font-bold">{{covertToSize(user.remainingSize,user.totalSize)}}  </span>  / {{getShortForm(user.totalSize)}}</span>
+            }
+            <span class="text-[10px] mx-1">*Including recycle bin</span>
+          </div>
              <div class="files-path flex justify-between mx-2">
                <div class="flex">
                   <span class="flex items-center"><svg-icon src="images/drive.svg" class="drive-icon"></svg-icon> <span class="mx-1">Drive</span> / <span class="mx-1"> root</span></span>
@@ -68,7 +80,7 @@
                      </div>
                   }
                   @if (zeroFiles) {
-                     <span class="block text-center text-5xl font-bold mt-[320px]">Empty Drive :(</span>
+                     <span class="block text-center text-2xl font-bold mt-3">{{(this.sideBarOption === "myDrive")?'Upload files!':'Empty recycle bin!'}}</span>
                   }
                </div> 
             }
@@ -109,7 +121,7 @@
                    </table>
   
                   @if (zeroFiles) {
-                     <span class="block text-center text-5xl font-bold mt-[320px]">Empty Drive :(</span>
+                     <span class="text-2xl font-bold flex justify-center"> {{(this.sideBarOption === "myDrive")?'Upload files!':'Empty recycle bin!'}}  </span>
                   }
                </div> 
             }

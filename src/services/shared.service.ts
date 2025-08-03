@@ -16,11 +16,13 @@ export class SharedService{
     SingleFileSubject: BehaviorSubject<FileItem|null> = new BehaviorSubject<FileItem|null>(null);
     uploadProgressSubject: BehaviorSubject<UploadProgress|null> = new BehaviorSubject<UploadProgress|null>(null);
     recycleBinSubject: BehaviorSubject<FileItem[]|null> = new BehaviorSubject<FileItem[]|null>(null);
+    selectedOptionSubject: BehaviorSubject<string | null> = new BehaviorSubject<string|null>(null);
     userData$ = this.userSubject.asObservable();
     filesData$ = this.fileSubject.asObservable();
     fileUploaded$ = this.SingleFileSubject.asObservable();
     uploadProgress$ = this.uploadProgressSubject.asObservable();
     recycleBin$ = this.recycleBinSubject.asObservable();
+    selectedOption$ = this.selectedOptionSubject.asObservable();
     uploadStatus: string = ''; 
   constructor(private _commonAPI:CommonService,private _toastService: ToastService,private _router: Router) {
   }
@@ -57,6 +59,7 @@ export class SharedService{
               this.SingleFileSubject.next(event.body as FileItem);
               this.uploadProgressSubject.next(null);
               this.getUserFiles();
+              this.getUserData();
               this.uploadStatus = "success";
               this._toastService.show("Successfully uploaded!","success",10000);
               this._router.navigate(["/dashboard"]);
@@ -90,12 +93,18 @@ export class SharedService{
       next:()=>{
         this.getUserFiles();
         this.getRecycleBin();
+        this.getUserData();
       },
       error:()=>{
         this._toastService.show("Error Deleting File/Files","error",10000)
       }
     });
   }
+
+  setOption(option:string){
+    this.selectedOptionSubject.next(option);
+  }
+
 
   clearUploadStatus(){
     this.uploadStatus = '';

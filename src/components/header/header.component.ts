@@ -14,6 +14,7 @@ import { User } from '../../models/user.model';
 })
 export class HeaderComponent{
   menuOpen = false;
+  selectedFile : File | null = null;
   public userdata$!: Observable<User| null>;
   constructor(private _auth:AuthenticateService,private _sharedData:SharedService){
     this.userdata$ = this._sharedData.userData$;
@@ -27,6 +28,31 @@ export class HeaderComponent{
       this.menuOpen = false;
     }
     this._auth.logout();
+  }
+  onFileSelected(event: Event){
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+    }
+    this.UploadFile();
+  }
+
+    UploadFile(){
+    if (!this.selectedFile) {
+        console.warn('No file selected.');
+        return;
+    }
+    const formData = new FormData();
+
+    formData.append("formFile",this.selectedFile);
+    formData.append("FileName",this.selectedFile.name.split(".")[0]);
+    this._sharedData.uploadFile(formData);
+    this._sharedData.getUserFiles();
+
+  }
+
+  selectOption(option:string){
+    this._sharedData.setOption(option);
   }
 
   toggleMenu() {
