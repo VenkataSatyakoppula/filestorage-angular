@@ -70,10 +70,32 @@ export class SharedService{
           console.log(err);
           this.uploadProgressSubject.next(null);
           this.uploadStatus = "error";
-          this._toastService.show("Error Uploading File","error",10000)
+          this._toastService.show("Server down or File already exists","error",10000)
         }
       }
     );
+  }
+
+  checkFileExists(fileName: string){
+    const curFiles = this.fileSubject.getValue();
+    for (let i = 0; i < curFiles.length; i++) {
+      const element = curFiles[i];
+      if (element.fileName === fileName || this.splitFilename(element.fileName).name === fileName){
+        return true;
+      }
+    }
+    return false;
+  }
+  splitFilename(filename:string) {
+  const lastDot = filename.lastIndexOf(".");
+  if (lastDot === -1 || lastDot === 0) {
+    return { name: filename, extension: "" };
+  }
+
+  return {
+    name: filename.substring(0, lastDot),
+    extension: filename.substring(lastDot + 1)
+  };
   }
 
   deleteFiles(fileIds: Number[],deleteType:string){

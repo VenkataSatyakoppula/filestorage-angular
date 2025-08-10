@@ -32,12 +32,6 @@ export class DashboardComponent implements OnInit {
   constructor( private _sharedService: SharedService){
     this._sharedService.getUserFiles();
     this._sharedService.getRecycleBin();
-    // const sideBar = sessionStorage.getItem("sideBar");
-    // if (sideBar) {
-    //   this.sideBarOption = sideBar;
-    // }else{
-    //   sessionStorage.setItem("sideBar",this.sideBarOption);
-    // }
     this.fileData$ = this._sharedService.filesData$;
     this.recycleBin$ = this._sharedService.recycleBin$;
     this.showProgressBar$ = this._sharedService.uploadProgress$;
@@ -47,7 +41,10 @@ export class DashboardComponent implements OnInit {
 
   get currentData$() {
     this.headerOption$.subscribe({next:(option)=>{
-      if(option){
+      console.log(option)
+
+      if(option && this.sideBarOption !== option){
+        this.unselectAll();
         this.sideBarOption = option;
       }
     }});
@@ -106,6 +103,16 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  downloadFile(fileId: string){
+      const downloadUrl = '/download';
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = '';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+  }
+
   unselectAll(){
     for (let i = 0; i < this.checkBoxChecked.length; i++) {
       const element = this.checkBoxChecked[i];
@@ -133,12 +140,6 @@ export class DashboardComponent implements OnInit {
       const arr = Array.from({ length }, () => ({ id: 0, flag: false }));
       this.checkBoxChecked = arr;
     }
-  }
-  changeOption(){
-    if (this.sideBarOption == "recycleBin" || this.sideBarOption == "myDrive") {
-      this.unselectAll();
-    }
-    
   }
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent) {

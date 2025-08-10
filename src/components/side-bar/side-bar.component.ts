@@ -4,6 +4,9 @@ import { SharedService } from '../../services/shared.service';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user.model';
+import { ToastService } from '../../services/toast.service';
+import { RenameModalComponent } from '../rename-modal/rename-modal.component';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -16,7 +19,7 @@ export class SideBarComponent {
   public userData$: Observable<User | null>; 
   @Input() menu: string = 'myDrive';
 
-  constructor(private _sharedService: SharedService){
+  constructor(private _sharedService: SharedService, private _toastService: ToastService, private _modalService: ModalService){
     this.userData$ = this._sharedService.userData$;
   }
 
@@ -26,20 +29,20 @@ export class SideBarComponent {
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
     }
-    this.UploadFile();
+    this.UploadFile(input);
   }
 
-  UploadFile(){
+  UploadFile(input: HTMLInputElement){
     if (!this.selectedFile) {
         console.warn('No file selected.');
         return;
     }
-    const formData = new FormData();
+    const fileName = this.selectedFile.name;
+    this._modalService.show(fileName);
+    this._modalService.setFile(this.selectedFile);
+    input.value = '';
+    return;
 
-    formData.append("formFile",this.selectedFile);
-    formData.append("FileName",this.selectedFile.name.split(".")[0]);
-    this._sharedService.uploadFile(formData);
-    this._sharedService.getUserFiles();
 
   }
 

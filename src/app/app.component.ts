@@ -6,9 +6,10 @@ import {SvgIconRegistryService} from 'angular-svg-icon';
 import { ToastComponent } from '../components/toast/toast.component';
 import { SharedService } from '../services/shared.service';
 import { AuthenticateService } from '../services/authenticate.service';
+import { RenameModalComponent } from '../components/rename-modal/rename-modal.component';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,HeaderComponent,FooterComponent,ToastComponent],
+  imports: [RouterOutlet,HeaderComponent,FooterComponent,ToastComponent,RenameModalComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

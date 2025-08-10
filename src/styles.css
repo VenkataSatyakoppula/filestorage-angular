@@ -38,3 +38,15 @@ body {
 input::placeholder {
     opacity: 0.5; /* 0 to 1 — lower is fainter */
 }
+
+.truncate-text::after {
+  content: attr(data-text);
+}
+
+.truncate-text {
+  display: inline-block;
+  max-width: 30ch;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

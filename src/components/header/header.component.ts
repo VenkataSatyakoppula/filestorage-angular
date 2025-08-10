@@ -6,6 +6,7 @@ import { AuthenticateService } from '../../services/authenticate.service';
 import { SharedService } from '../../services/shared.service';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user.model';
+import { ModalService } from '../../services/modal.service';
 @Component({
   selector: 'app-header',
   imports: [CommonModule, SvgIconComponent, RouterLink],
@@ -16,7 +17,7 @@ export class HeaderComponent{
   menuOpen = false;
   selectedFile : File | null = null;
   public userdata$!: Observable<User| null>;
-  constructor(private _auth:AuthenticateService,private _sharedData:SharedService){
+  constructor(private _auth:AuthenticateService,private _sharedData:SharedService,private _modalService: ModalService){
     this.userdata$ = this._sharedData.userData$;
   }
 
@@ -34,21 +35,19 @@ export class HeaderComponent{
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
     }
-    this.UploadFile();
+    this.UploadFile(input);
   }
 
-    UploadFile(){
+  UploadFile(input: HTMLInputElement){
     if (!this.selectedFile) {
         console.warn('No file selected.');
         return;
     }
-    const formData = new FormData();
-
-    formData.append("formFile",this.selectedFile);
-    formData.append("FileName",this.selectedFile.name.split(".")[0]);
-    this._sharedData.uploadFile(formData);
-    this._sharedData.getUserFiles();
-
+    const fileName = this.selectedFile.name.split(".")[0];
+    this._modalService.show(fileName);
+    this._modalService.setFile(this.selectedFile);
+    input.value = '';
+    return;
   }
 
   selectOption(option:string){

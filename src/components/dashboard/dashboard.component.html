@@ -87,34 +87,34 @@
 
             @else {
 
-               <div class="w-full h-[calc(100vh-230px)]  overflow-y-auto" [ngClass]="zeroFiles ? [`bg-[center_50px]`,`bg-[length:300px_300px]`,'bg-no-repeat', `bg-[url('assets/images/empty-drive.svg')]`,'justify-center'] : ''">
-                  <table class="w-full mt-3">
+               <div class="h-[calc(100vh-230px)] w-full overflow-y-auto" [ngClass]="zeroFiles ? [`bg-[center_50px]`,`bg-[length:300px_300px]`,'bg-no-repeat', `bg-[url('assets/images/empty-drive.svg')]`,'justify-center'] : ''">
+                  <table class="mt-3 w-full">
                      @if (!zeroFiles) {
                      <thead>
                        <tr>
-                        <th class="text-start w-120">File Name</th>
-                        <th class="text-start w-50 max-md:hidden">Date Created</th>
-                        <th class="text-start w-25 max-md:hidden">File Type</th>
-                        <th class="max-md:hidden text-end">Size</th>
+                        <th class="text-start">File Name</th>
+                        <th class="text-start max-md:hidden">Date Created</th>
+                        <th class="text-start pl-2 max-md:hidden">File Type</th>
+                        <th class="text-end">Size</th>
                        </tr>
                      </thead>
                      }
 
                      <tbody>
                         @for (item of files ; track $index) {
-                           <tr class="hover:bg-gray-100 cursor-pointer rounded-lg" [ngClass]="checkBoxChecked[$index].flag?'bg-gray-200':''" (click)="checkBox($index.toString(),item.fileId)">
-                              <td class="w-120">
+                           <tr class="hover:bg-gray-100 cursor-pointer rounded-lg"  [ngClass]="checkBoxChecked[$index].flag?'bg-gray-200':''" (click)="checkBox($index.toString(),item.fileId)">
+                              <td>
                                 <div class="flex justify-start items-center">
                                    <input id="default-checkbox" type="checkbox" [checked]="checkBoxChecked[$index].flag"  class="w-4 h-4 accent-primary bg-gray-100 border-gray-300 rounded-sm">
                                    <img [src]="'images/'+getFileIcon(item.fileType)" height="30" width="30">
-                                   <p class="text-sm truncate w-full ms-2">
+                                   <p class="text-sm ms-2 truncate-text">
                                       {{item.fileName}}
                                    </p>
                                 </div>
                               </td>
-                              <td class="text-start w-50 max-md:hidden truncate">{{item.createdAt | date: "MM/dd/yyyy hh:mm a"}}</td>
-                              <td class="w-25 max-md:hidden truncate">{{item.fileType}}</td>
-                              <td class="max-md:hidden pl-2 text-end">{{item.fileSize}}</td>
+                              <td class="text-start max-md:hidden ">{{item.createdAt | date: "MM/dd/yyyy hh:mm a"}}</td>
+                              <td class="max-md:hidden pl-2 text-sm">{{item.fileType.split("/")[1]}}</td>
+                              <td class="pl-2 text-end">{{ getShortForm(item.fileSize)}}</td>
                            </tr>
                         }
                      </tbody>
