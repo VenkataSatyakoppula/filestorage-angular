@@ -6,7 +6,7 @@
     </div>
     <div class="hidden md:flex items-center space-x-4">
       @if(isLoggedIn()){
-        <span class="block text-lg font-bold p-1">Hi, <span class="font-extrabold text-primary">{{username?.name}}!</span></span>
+        <span class="block text-lg font-bold p-1">Hi, <span class="font-extrabold text-primary">{{username?.user?.name}}!</span></span>
         <a  [routerLink]="['/authenticate']"
               [queryParams]="{ type: 'login' }" class="flex text-red-500 rounded-xl text-md justify-center items-center font-extrabold p-2 hover:bg-red-500 hover:text-white custom-hover" aria-current="page">
           <span class="me-2">Log Out</span>  <svg-icon name="logout" class="logout-icon"></svg-icon>
@@ -58,7 +58,7 @@
       <ul class="flex flex-col font-medium space-y-2.5 p-2">
         @if(isLoggedIn()){
           <li>
-            <span class="block text-lg font-bold p-1">Hi, <span class="font-extrabold text-primary">{{username?.name}}!</span></span>
+            <span class="block text-lg font-bold p-1">Hi, <span class="font-extrabold text-primary">{{username?.user?.name}}!</span></span>
             <hr>
           </li>
           

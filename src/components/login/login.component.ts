@@ -9,9 +9,15 @@ import { SignUpPayload } from '../../models/signup.payload';
 import { SignUpResponse } from '../../models/signup.response';
 import { ToastService } from '../../services/toast.service';
 import { SharedService } from '../../services/shared.service';
+import { uniqueNamesGenerator, adjectives, colors, animals, Config } from 'unique-names-generator';
+import { SvgIconComponent } from 'angular-svg-icon';
+const config: Config = {
+  dictionaries: [adjectives, colors, animals],
+  separator: '-'
+};
 @Component({
   selector: 'app-login',
-  imports: [RouterLink,ReactiveFormsModule,CommonModule],
+  imports: [RouterLink,ReactiveFormsModule,CommonModule,SvgIconComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -20,6 +26,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   signUpForm: FormGroup;
   loading: boolean = false;
+  guestLoading: boolean = false;
   constructor(private route: ActivatedRoute,private _auth: AuthenticateService,private _sharedService: SharedService,private fb: FormBuilder,private _router: Router,private _toastService: ToastService){
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -99,6 +106,45 @@ export class LoginComponent implements OnInit {
         console.log(err);
       }
     });
+  }
+
+  registerAPICall(payload: SignUpPayload){
+      this._auth.signUp(payload).subscribe({
+      next: (res)=>{
+        this.loading = false;
+        this.guestLoading = false;
+
+        console.log(res);
+        if(res === "User Email Already Exists"){
+          this.signUpForm.get('email')?.setErrors({ emailExists: true });
+          return;
+        }
+        const result: SignUpResponse = JSON.parse(res);
+        this._auth.setAuthToken(result.credentials);
+        this._sharedService.getUserData();
+        this._toastService.show('SignUp Successful','success',3000);
+        this._router.navigate(['dashboard']);
+      },
+      error: (err) =>{
+        this.loading = false;
+        this.guestLoading = false;
+        this._toastService.show('Something went wrong','error');
+        console.log(err);
+      }
+    });
+  }
+
+  GuestLogin(){
+    const guest_username: string = uniqueNamesGenerator(config);
+    const guest_useremail: string = guest_username+"@"+"guest.com"
+    const payload: SignUpPayload = {
+      email: guest_useremail,
+      name:guest_username,
+      password: guest_username,
+      userType: "guest"
+    }
+    this.guestLoading = true;
+    this.registerAPICall(payload);
   }
 
 }

@@ -23,6 +23,13 @@ export class CommonService {
   wipeUserFilesAPI(fileId : Number){
     return this._http.delete<{message:string}>(`${environment.apiBaseUrl}/file/wipe/${fileId}`);
   }
+  restoreUserFilesAPI(fileId: Number){
+    return this._http.post<{message:string}>(`${environment.apiBaseUrl}/file/restore/${fileId}`,{});
+  }
+
+  generateFileLinkAPI(fileForm: FormData){
+    return this._http.post<{url:string}>(`${environment.apiBaseUrl}/file/generate-link`,fileForm);
+  }
 
   getRecycleBinFilesAPI(){
     return this._http.get<FileItem[]>(`${environment.apiBaseUrl}/file/recycle`);

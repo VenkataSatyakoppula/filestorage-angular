@@ -1,4 +1,5 @@
 export interface UploadProgress {
-    name: string;
-    percent:string;
+    type:string;
+    name?: string;
+    percent?:string;
 }

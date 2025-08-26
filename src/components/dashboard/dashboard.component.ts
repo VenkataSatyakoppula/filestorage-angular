@@ -5,11 +5,12 @@ import { SideBarComponent } from '../side-bar/side-bar.component';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { initFlowbite } from 'flowbite';
 import { Observable } from 'rxjs';
-import { FileItem } from '../../models/file.model';
+import { FileItem, FileItems, UserState } from '../../models/file.model';
 import { SharedService } from '../../services/shared.service';
 import { fileTypes } from '../../content/filemap.content';
 import { UploadProgress } from '../../models/progress.model';
 import { User } from '../../models/user.model';
+import { environment } from '../../environment/environment';
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule,SpeedDailComponent,SideBarComponent,SvgIconComponent],
@@ -19,16 +20,17 @@ import { User } from '../../models/user.model';
 })
 export class DashboardComponent implements OnInit {
   dropdown: boolean = false;
-  gridView: boolean = false;
+  gridView: boolean = true;
   
   selectedCount = signal(0);
   checkBoxChecked: {id: Number, flag: boolean}[] = [];
-  public fileData$: Observable<FileItem[] | []>; 
-  public recycleBin$: Observable<FileItem[] | null>;
-  public userData$: Observable<User | null>; 
+  public fileData$: Observable<FileItems>; 
+  public recycleBin$: Observable<FileItems>;
+  public userData$: Observable<UserState>; 
   showProgressBar$: Observable<UploadProgress | null>;
   public sideBarOption: string = 'myDrive';
   public headerOption$: Observable<string|null>;
+  public downloadUrls$ : Observable<string|null>;
   constructor( private _sharedService: SharedService){
     this._sharedService.getUserFiles();
     this._sharedService.getRecycleBin();
@@ -37,11 +39,11 @@ export class DashboardComponent implements OnInit {
     this.showProgressBar$ = this._sharedService.uploadProgress$;
     this.headerOption$ = this._sharedService.selectedOption$;
     this.userData$ = this._sharedService.userData$;
+    this.downloadUrls$ = this._sharedService.downloadUrl$;
   }
 
   get currentData$() {
     this.headerOption$.subscribe({next:(option)=>{
-      console.log(option)
 
       if(option && this.sideBarOption !== option){
         this.unselectAll();
@@ -51,16 +53,16 @@ export class DashboardComponent implements OnInit {
     return this.sideBarOption === 'recycleBin' ? this.recycleBin$ : this.fileData$;
   }
 
-  getRemPercentage(rem:string,total:string){
-    return ( (1 - (Number(rem) / Number(total)))*100).toFixed(2).toString()+"%"
+  getRemPercentage(rem:string|undefined,total:string|undefined){
+    return ( (1 - (Number(rem) / Number(total)))*100).toFixed(1).toString()
   }
 
-  covertToSize(rem:string,total:string){
+  covertToSize(rem:string|undefined,total:string|undefined){
     const fileSize = Number(total) - Number(rem);
     return this.getShortForm(fileSize.toString())
   }
 
-  getShortForm(size:string){
+  getShortForm(size:string|undefined){
     const fileSize = Number(size);
     const KB = 1024;
     const MB = KB * 1024;
@@ -103,14 +105,29 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  downloadFile(fileId: string){
-      const downloadUrl = '/download';
-      const a = document.createElement('a');
-      a.href = downloadUrl;
-      a.download = '';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+  downloadFiles(){
+    const fileIds: Number[] = [] 
+    for (let i = 0; i < this.checkBoxChecked.length; i++) {
+      const element = this.checkBoxChecked[i];
+      if(element.flag){
+        fileIds.push(element.id);
+      }
+    }
+    this._sharedService.downloadFiles(fileIds,this.sideBarOption);
+    this.downloadUrls$.subscribe(url => {
+      
+      if (url) {
+        const fileData = JSON.parse(url);
+        const a = document.createElement('a');
+        a.href = `${environment.apiBaseUrl}/file/${fileData.url}`;
+        a.download = fileData.fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        this._sharedService.clearDownloadUrl();
+      }
+    });
+    this.unselectAll();
   }
 
   unselectAll(){
@@ -132,6 +149,17 @@ export class DashboardComponent implements OnInit {
       }
     }
     this._sharedService.deleteFiles(fileIds,this.sideBarOption);
+    this.unselectAll();
+  }
+  restoreFiles(){
+    const fileIds: Number[] = [] 
+    for (let i = 0; i < this.checkBoxChecked.length; i++) {
+      const element = this.checkBoxChecked[i];
+      if(element.flag){
+        fileIds.push(element.id);
+      }
+    }
+    this._sharedService.restoreFiles(fileIds);
     this.unselectAll();
   }
 

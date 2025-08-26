@@ -1,22 +1,31 @@
 <main class="flex h-full w-full">
    <app-side-bar></app-side-bar>
 
-   @if (currentData$  | async; as files) {
-
+   @if (currentData$  | async; as filesList) {
+   @let files = filesList.files;
    @let zeroFiles = files.length <= 0;
    {{updateCheckBoxChecked(files.length)}}
    <section class="flex-1 flex">
 
       <div class="flex flex-col mt-6 flex-1">
          <div class="md:hidden mb-3">
-            @if(userData$ | async; as user){
-               <h3>Used : <span class="text-primary font-bold">{{getRemPercentage(user.remainingSize,user.totalSize)}}</span></h3>
+            @if(userData$ | async; as userState){
+            
+               @if(userState.isLoading){
+               <div class="grid items-center place-content-center" >
+                  <svg-icon src="images/spinner.svg"></svg-icon>
+               </div>
+               }@else {
+               @let user = userState.user;
+               <h3>Used : <span class="text-primary font-bold">{{getRemPercentage(user.remainingSize,user.totalSize)}} %</span></h3>
                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                  <div class="bg-primary h-2.5 rounded-full" [style]="'width:'+getRemPercentage(user.remainingSize,user.totalSize)"></div>
+                  <div class="bg-primary h-2.5 rounded-full" [style]="'width:'+getRemPercentage(user.remainingSize,user.totalSize)+'%'"></div>
                </div>
                <span class="text-xs"> <span class="text-primary font-bold">{{covertToSize(user.remainingSize,user.totalSize)}}  </span>  / {{getShortForm(user.totalSize)}}</span>
+               <span class="text-[10px] mx-1">*Including recycle bin</span>
             }
-            <span class="text-[10px] mx-1">*Including recycle bin</span>
+         }
+
           </div>
              <div class="files-path flex justify-between mx-2">
                <div class="flex">
@@ -25,11 +34,23 @@
                      <div class="flex bg-gray-200 rounded-lg items-center w-fit px-1 ms-2">
                         <svg-icon src="images/close.svg" class="drive-icon cursor-pointer" (click)="unselectAll()"></svg-icon>
                         <p class="ms-2">{{selectedCount()}} <span class="max-md:hidden"> Selected </span> </p>
-                        <svg-icon src="images/download.svg" data-tooltip-target="tooltip-default" data-tooltip-trigger="hover" class="util-icon ms-3 cursor-pointer hover:bg-primary hover:rounded-2xl"></svg-icon>
-                        <div id="tooltip-default" role="tooltip" class="absolute z-10 invisible inline-block px-2 py-1 text-sm font-medium text-white transition-opacity duration-300 bg-primary rounded-lg shadow-xs opacity-0 tooltip">
-                           Download file
-                           <div class="tooltip-arrow" data-popper-arrow></div>
-                       </div>
+                        @if (sideBarOption === "myDrive") {
+                           <svg-icon src="images/download.svg" data-tooltip-target="tooltip-default" data-tooltip-trigger="hover" class="util-icon ms-3 cursor-pointer hover:bg-primary hover:rounded-2xl" (click)="downloadFiles()"></svg-icon>
+                           
+                           <div id="tooltip-default" role="tooltip" class="absolute z-10 invisible inline-block px-2 py-1 text-sm font-medium text-white transition-opacity duration-300 bg-primary rounded-lg shadow-xs opacity-0 tooltip">
+                              Download file
+                              <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                        }
+                        @else {
+                           <svg-icon src="images/restore.svg" data-tooltip-target="tooltip-default" data-tooltip-trigger="hover" class="util-icon ms-3 cursor-pointer hover:bg-primary hover:rounded-2xl" (click)="restoreFiles()"></svg-icon>
+                           <div id="tooltip-default" role="tooltip" class="absolute z-10 invisible inline-block px-2 py-1 text-sm font-medium text-white transition-opacity duration-300 bg-primary rounded-lg shadow-xs opacity-0 tooltip">
+                              Restore file
+                              <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                        }
+
+
                         <svg-icon src="images/delete.svg" data-tooltip-target="tooltip-delete" class="util-icon ms-3 cursor-pointer hover:bg-primary hover:rounded-2xl" (click)="deleteFiles()"></svg-icon>
                         <div id="tooltip-delete" role="tooltip" class="absolute z-10 invisible inline-block px-2 py-1 text-sm font-medium text-white transition-opacity duration-300 bg-primary rounded-lg shadow-xs opacity-0 tooltip">
                            Delete file
@@ -67,9 +88,9 @@
                     </div>
                </span>
              </div>
-
+         @if (!filesList.isLoading) {
             @if(gridView){
-               <div class="grid h-[calc(100vh-192px)] auto-rows-min" [ngClass]="zeroFiles ? [`bg-[center_50px]`,`bg-[length:300px_300px]`,'bg-no-repeat', `bg-[url('assets/images/empty-drive.svg')]`,'justify-center'] :  ['lg:grid-cols-10','grid-cols-6', 'max-sm:grid-cols-4', 'mt-4']">
+               <div class="grid h-[calc(100vh-200px)] auto-rows-min" [ngClass]="zeroFiles ? [`bg-[center_50px]`,`bg-[length:300px_300px]`,'bg-no-repeat', `bg-[url('assets/images/empty-drive.svg')]`,'justify-center'] :  ['lg:grid-cols-10','grid-cols-6', 'max-sm:grid-cols-4', 'mt-4']">
                   @for (item of files; track $index) {
                      <div class="hover:bg-gray-100 cursor-pointer m-1 rounded-md" [ngClass]="checkBoxChecked[$index].flag?'bg-gray-200':''" (click)="checkBox($index.toString(),item.fileId)">
                         <input id="default-checkbox" type="checkbox" [checked]="checkBoxChecked[$index].flag"  class="w-4 h-4 accent-primary bg-gray-100 border-gray-300 rounded-sm m-1">
@@ -112,8 +133,8 @@
                                    </p>
                                 </div>
                               </td>
-                              <td class="text-start max-md:hidden ">{{item.createdAt | date: "MM/dd/yyyy hh:mm a"}}</td>
-                              <td class="max-md:hidden pl-2 text-sm">{{item.fileType.split("/")[1]}}</td>
+                              <td class="text-start max-md:hidden">{{item.createdAt | date: "MM/dd/yyyy hh:mm a"}}</td>
+                              <td class="pl-2 text-sm md:truncate md:max-w-20 md:overflow-hidden md:text-ellipsis  max-md:hidden">{{item.fileType.split("/")[1]}}</td>
                               <td class="pl-2 text-end">{{ getShortForm(item.fileSize)}}</td>
                            </tr>
                         }
@@ -125,26 +146,56 @@
                   }
                </div> 
             }
+         }
+         @else {
+            <div class="grid h-[calc(100vh-200px)] items-center place-content-center" >
+               <svg-icon src="images/spinner.svg"></svg-icon>
+            </div>
 
+         }
       </div>
    </section>
    }
 
    @if (showProgressBar$ | async; as progress) {
-      <div class="z-10 absolute md:end-10 bottom-10 not-md:start-[50%] not-md:translate-x-[-50%]  w-2xs ps-4 pe-4 pb-2 pt-2 bg-gray-50 rounded-lg">
-            <div class="progress-bar-close my-2">
-               <span class="text-sm font-light text-black flex"> <svg-icon name="upload" class="upload-icon-progress me-2"></svg-icon> <span> Uploading...</span></span>
-               <svg-icon src="images/close.svg" class="drive-icon cursor-pointer"></svg-icon>
-            </div>
-            
-            <div class="flex justify-between mb-1">
-            <span class="text-md font-bold text-black ">{{progress.name}}</span>
-            <span class="text-sm font-bold text-black">{{progress.percent}}%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5">
-            <div class="bg-primary h-2.5 rounded-full" [style]="'width:'+progress.percent+'%'"></div>
-            </div>
-      </div>
+      @if(progress.type == "upload"){
+         <div class="z-10 absolute md:end-10 bottom-10 not-md:start-[50%] not-md:translate-x-[-50%]  w-2xs ps-4 pe-4 pb-2 pt-2 bg-gray-50 rounded-lg">
+               <div class="progress-bar-close my-2">
+                  <span class="text-sm font-light text-black flex"> <svg-icon name="upload" class="upload-icon-progress me-2"></svg-icon> <span> Uploading...</span></span>
+                  <svg-icon src="images/close.svg" class="drive-icon cursor-pointer"></svg-icon>
+               </div>
+               
+               <div class="flex justify-between mb-1">
+               <span class="text-md font-bold text-black ">{{progress.name}}</span>
+               <span class="text-sm font-bold text-black">{{progress.percent}} %</span>    
+               </div>
+               <div class="w-full bg-gray-200 rounded-full h-2.5">
+               <div class="bg-primary h-2.5 rounded-full" [style]="'width:'+progress.percent+'%'"></div>
+               </div>
+         </div>
+      }
+      @else {
+         <div class="z-10 absolute bottom-10 start-[50%] translate-x-[-50%]  w-2xs ps-4 pe-4 pb-2 pt-2 bg-gray-50 rounded-lg">
+               <div class="progress-bar-close my-2">
+                  <span class="text-sm font-light text-black flex items-center"> 
+                  <div role="status">
+                     <svg-icon src="images/spinner.svg"></svg-icon>
+                  </div> 
+                  @switch (progress.type) {
+                     @case ("restoring") {
+                        <span class="ms-3 font-bold"> Restoring files please wait...</span>
+                     }
+                     @case ("zipping") {
+                        <span class="ms-3 font-bold"> Zipping files please wait...</span>
+                     }
+                  }
+
+                  </span>
+                  <svg-icon src="images/close.svg" class="drive-icon cursor-pointer"></svg-icon>
+               </div>
+         </div>
+      }
+
    }
 
 </main>

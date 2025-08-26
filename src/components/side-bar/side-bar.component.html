@@ -29,15 +29,26 @@
 
           </ul>
           <div class="mt-5">
-            @if(userData$ | async; as user){
-               <h3>Used : <span class="text-primary font-bold">{{getRemPercentage(user.remainingSize,user.totalSize)}}</span></h3>
+            @if(userData$ | async; as userState){
+               @if(userState.isLoading){
+                  <div class="grid items-center place-content-center" >
+                     <svg-icon src="images/spinner.svg"></svg-icon>
+                  </div>
+               }
+               @else {
+               @let user = userState.user;
+               <h3>Used : <span class="text-primary font-bold">{{getRemPercentage(user.remainingSize,user.totalSize)}} %</span></h3>
                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                  <div class="bg-primary h-2.5 rounded-full" [style]="'width:'+getRemPercentage(user.remainingSize,user.totalSize)"></div>
+                  <div class="bg-primary h-2.5 rounded-full" [style]="'width:'+getRemPercentage(user.remainingSize,user.totalSize)+'%'"></div>
                </div>
                <span class="text-xs"> <span class="text-primary font-bold">{{covertToSize(user.remainingSize,user.totalSize)}}  </span>  / {{getShortForm(user.totalSize)}}</span>
+               <span class="text-[10px]">   *Including recycle bin</span>
+
+
             }
+         }
             
           </div>
-          <span class="text-[10px]">*Including recycle bin</span>
+
        </div>
 </aside>

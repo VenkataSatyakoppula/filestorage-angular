@@ -7,6 +7,7 @@ import { User } from '../../models/user.model';
 import { ToastService } from '../../services/toast.service';
 import { RenameModalComponent } from '../rename-modal/rename-modal.component';
 import { ModalService } from '../../services/modal.service';
+import { UserState } from '../../models/file.model';
 
 @Component({
   selector: 'app-side-bar',
@@ -16,7 +17,7 @@ import { ModalService } from '../../services/modal.service';
 })
 export class SideBarComponent {
   selectedFile : File | null = null;
-  public userData$: Observable<User | null>; 
+  public userData$: Observable<UserState>; 
   @Input() menu: string = 'myDrive';
 
   constructor(private _sharedService: SharedService, private _toastService: ToastService, private _modalService: ModalService){
@@ -46,16 +47,16 @@ export class SideBarComponent {
 
   }
 
-  getRemPercentage(rem:string,total:string){
-    return ( (1 - (Number(rem) / Number(total)))*100).toFixed(2).toString()+"%"
+  getRemPercentage(rem:string|undefined,total:string|undefined){
+    return ( (1 - (Number(rem) / Number(total)))*100).toFixed(1).toString()
   }
 
-  covertToSize(rem:string,total:string){
+  covertToSize(rem:string|undefined,total:string|undefined){
     const fileSize = Number(total) - Number(rem);
     return this.getShortForm(fileSize.toString())
   }
 
-  getShortForm(size:string){
+  getShortForm(size:string|undefined){
     const fileSize = Number(size);
     const KB = 1024;
     const MB = KB * 1024;

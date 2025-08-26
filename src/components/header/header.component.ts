@@ -7,6 +7,7 @@ import { SharedService } from '../../services/shared.service';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user.model';
 import { ModalService } from '../../services/modal.service';
+import { UserState } from '../../models/file.model';
 @Component({
   selector: 'app-header',
   imports: [CommonModule, SvgIconComponent, RouterLink],
@@ -16,7 +17,7 @@ import { ModalService } from '../../services/modal.service';
 export class HeaderComponent{
   menuOpen = false;
   selectedFile : File | null = null;
-  public userdata$!: Observable<User| null>;
+  public userdata$: Observable<UserState>;
   constructor(private _auth:AuthenticateService,private _sharedData:SharedService,private _modalService: ModalService){
     this.userdata$ = this._sharedData.userData$;
   }
