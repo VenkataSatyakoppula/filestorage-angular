@@ -1,5 +1,5 @@
 export const environment = {
     production: true,        
-    apiBaseUrl: '',
+    apiBaseUrl: 'https://filestorage-api.azurewebsites.net',
 };
   
