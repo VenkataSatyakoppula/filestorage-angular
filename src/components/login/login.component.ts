@@ -98,6 +98,7 @@ export class LoginComponent implements OnInit {
         }
         const result: SignUpResponse = JSON.parse(res);
         this._auth.setAuthToken(result.credentials);
+        this._sharedService.getUserData();
         this._toastService.show('SignUp Successful','success',3000);
         this._router.navigate(['dashboard']);
       },
