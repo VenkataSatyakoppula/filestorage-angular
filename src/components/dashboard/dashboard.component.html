@@ -166,7 +166,7 @@
                </div>
                
                <div class="flex justify-between mb-1">
-               <span class="text-md font-bold text-black ">{{progress.name}}</span>
+               <span class="text-md font-bold text-black truncate">{{progress.name}}</span>
                <span class="text-sm font-bold text-black">{{progress.percent}} %</span>    
                </div>
                <div class="w-full bg-gray-200 rounded-full h-2.5">
@@ -186,7 +186,7 @@
                         <span class="ms-3 font-bold"> Restoring files please wait...</span>
                      }
                      @case ("zipping") {
-                        <span class="ms-3 font-bold"> Zipping files please wait...</span>
+                        <span class="ms-3 font-bold"> Zipping files <span class="text-primary font-extrabold"> {{progress.percent}} ....</span> </span>
                      }
                   }
 

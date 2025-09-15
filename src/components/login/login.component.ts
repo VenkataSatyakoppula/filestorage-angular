@@ -102,6 +102,10 @@ export class LoginComponent implements OnInit {
       },
       error: (err) =>{
         this.loading = false;
+        if(err.error.includes("Cannot Allocate Resources!")){
+          this._toastService.show('Cannot Allocate more users!','error');
+          return;
+        }
         this._toastService.show('Something went wrong','error');
         console.log(err);
       }
@@ -128,6 +132,11 @@ export class LoginComponent implements OnInit {
       error: (err) =>{
         this.loading = false;
         this.guestLoading = false;
+        console.log(err.error);
+        if(err.error.includes("Cannot Allocate Resources!")){
+          this._toastService.show('Cannot Allocate more users!','error');
+          return;
+        }
         this._toastService.show('Something went wrong','error');
         console.log(err);
       }

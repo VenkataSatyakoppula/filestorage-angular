@@ -94,9 +94,13 @@ export class SharedService{
         },
         error:(err)=>{
           console.log(err);
+          if (err.error.includes("Storage Limit exceeded")) {
+            this._toastService.show("Storage Limit exceeded!","error",10000);
+            return;
+          }
           this.uploadProgressSubject.next(null);
           this.uploadStatus = "error";
-          this._toastService.show("Server down or File already exists","error",10000)
+          this._toastService.show("Something went wrong!","error",10000)
         }
       }
     );
@@ -116,21 +120,16 @@ export class SharedService{
     if (fileIds.length > 1) {
       this.uploadProgressSubject.next({
         name:"",
-        percent:"",
+        percent:`0 / ${fileIds.length}`,
         type:"zipping"
       });
     }
 
     return this._commonAPI.generateFileLinkAPI(fileFormData).subscribe({
       next:(res)=>{
-        if (fileIds.length > 1) {
-        this.uploadProgressSubject.next(null);
-        }
-        console.log(res);
         if (res) {
             this.downloadUrlSubject.next(JSON.stringify(res));  
         }
-
       },
       error:()=>{
         this._toastService.show("File Download Failed,Please try again!","error",10000)
@@ -139,6 +138,9 @@ export class SharedService{
   }
   clearDownloadUrl(){
     this.downloadUrlSubject.next(null);
+  }
+  clearUploadProgress(){
+    this.uploadProgressSubject.next(null);
   }
 
   checkFileExists(fileName: string){

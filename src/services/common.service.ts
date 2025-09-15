@@ -28,7 +28,7 @@ export class CommonService {
   }
 
   generateFileLinkAPI(fileForm: FormData){
-    return this._http.post<{url:string}>(`${environment.apiBaseUrl}/file/generate-link`,fileForm);
+    return this._http.post<[{url:string,fileName:string}]>(`${environment.apiBaseUrl}/file/generate-link`,fileForm);
   }
 
   getRecycleBinFilesAPI(){
