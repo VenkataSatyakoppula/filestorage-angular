@@ -49,6 +49,7 @@ export class LoginComponent implements OnInit {
       this.loginMode = this.route.snapshot.queryParamMap.get('type') === 'login'? true : false;
     });
     this._auth.logout();
+    this._sharedService.resetAllStatuses();
   }
   onLogin(){
     if(this.loginForm.invalid){

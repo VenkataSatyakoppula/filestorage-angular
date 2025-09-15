@@ -231,4 +231,14 @@ export class SharedService{
   clearUploadStatus(){
     this.uploadStatus = '';
   }
+  resetAllStatuses() {
+    this.userSubject.next(userInit);
+    this.fileSubject.next(fileItemsInit);
+    this.SingleFileSubject.next(null);
+    this.uploadProgressSubject.next(null);
+    this.recycleBinSubject.next(fileItemsInit);
+    this.selectedOptionSubject.next(null);
+    this.downloadUrlSubject.next(null);
+    this.uploadStatus = '';
+  }
 }
