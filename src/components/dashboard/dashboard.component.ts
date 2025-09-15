@@ -11,6 +11,7 @@ import { fileTypes } from '../../content/filemap.content';
 import { UploadProgress } from '../../models/progress.model';
 import JSZip, { file } from 'jszip';
 import { saveAs } from 'file-saver';
+import { ModalService } from '../../services/modal.service';
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule,SpeedDailComponent,SideBarComponent,SvgIconComponent],
@@ -31,7 +32,7 @@ export class DashboardComponent implements OnInit {
   public sideBarOption: string = 'myDrive';
   public headerOption$: Observable<string|null>;
   public downloadUrls$ : Observable<string|null>;
-  constructor( private _sharedService: SharedService){
+  constructor(private _sharedService: SharedService,private _modalService: ModalService){
     this._sharedService.getUserFiles();
     this._sharedService.getRecycleBin();
     this.fileData$ = this._sharedService.filesData$;
@@ -165,6 +166,16 @@ export class DashboardComponent implements OnInit {
       }
     }
     this.selectedCount.set(0);
+  }
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+        const fileName = input.files[0].name.split(".")[0];
+        this._modalService.show(fileName);
+        this._modalService.setFile(input.files[0]);
+        input.value = '';
+      input.value = '';
+    }
   }
 
   deleteFiles(){

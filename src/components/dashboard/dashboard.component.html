@@ -199,6 +199,7 @@
    }
 
 </main>
-<app-speed-dail></app-speed-dail>
+<input type="file" (change)="onFileSelected($event)" hidden #fileInput />
+<app-speed-dail (click)="fileInput.click()"></app-speed-dail>
 
 

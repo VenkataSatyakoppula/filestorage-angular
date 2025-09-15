@@ -26,12 +26,11 @@ export class HeaderComponent{
     return this._auth.isLoggedIn();
   }
   logOut(){
-    if (this.menuOpen){
-      this.menuOpen = false;
-    }
+    this.menuOpen = false;
     this._auth.logout();
   }
   onFileSelected(event: Event){
+    this.menuOpen = false;
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
@@ -52,6 +51,7 @@ export class HeaderComponent{
   }
 
   selectOption(option:string){
+    this.menuOpen = false;
     this._sharedData.setOption(option);
   }
 
